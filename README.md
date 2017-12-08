@@ -1,1 +1,1 @@
-# HarekazeCTF-Competition
+# HarekazeCTF-golang

@@ -1,11 +1,12 @@
 package controllers
 
 import (
+	"./BaseController"
 	"github.com/kataras/iris/mvc"
 )
 
 type HomeController struct {
-	mvc.C
+	BaseController.Base
 }
 
 func (c *HomeController) Get() mvc.Result {

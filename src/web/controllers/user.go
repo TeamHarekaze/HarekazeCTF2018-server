@@ -6,9 +6,9 @@ import (
 	"regexp"
 
 	"../models"
+	"./BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
-	"github.com/kataras/iris/sessions"
 )
 
 // UserController is our /user controller.
@@ -20,55 +20,13 @@ import (
 // GET              /user/me
 // All HTTP Methods /user/logout
 type UserController struct {
-	// mvc.C is just a lightweight lightweight alternative
-	// to the "mvc.Controller" controller type,
-	// use it when you don't need mvc.Controller's fields
-	// (you don't need those fields when you return values from the method functions).
-	mvc.C
-
-	// Our UserService, it's an interface which
-	// is binded from the main application.
-	// Service services.UserService
-
-	// Session-relative things.
-	Manager *sessions.Sessions
-	Session *sessions.Session
-}
-
-// BeginRequest will set the current session to the controller.
-//
-// Remember: iris.Context and context.Context is exactly the same thing,
-// iris.Context is just a type alias for go 1.9 users.
-// We use context.Context here because we don't need all iris' root functions,
-// when we see the import paths, we make it visible to ourselves that this file is using only the context.
-func (c *UserController) BeginRequest(ctx context.Context) {
-	c.C.BeginRequest(ctx)
-
-	if c.Manager == nil {
-		ctx.Application().Logger().Errorf(`UserController: sessions manager is nil, you should bind it`)
-		ctx.StopExecution() // dont run the main method handler and any "done" handlers.
-		return
-	}
-
-	c.Session = c.Manager.Start(ctx)
-	if c.Session.Get("username") != nil {
-		txt := fmt.Sprintf("login user is %s", c.Session.Get("username"))
-		fmt.Println(txt)
-	}
-}
-
-func (c *UserController) isLoggedIn() bool {
-	return c.Session.Get("username") != nil
-}
-
-func (c *UserController) logout() {
-	c.Session.Clear()
+	BaseController.Base
 }
 
 // GetRegister handles GET: http://localhost:8080/user/register.
 func (c *UserController) GetRegister() mvc.Result {
-	if c.isLoggedIn() {
-		c.logout()
+	if c.IsLoggedIn() {
+		c.Logout()
 	}
 
 	return mvc.View{
@@ -114,7 +72,7 @@ func (c *UserController) PostRegister() mvc.Result {
 	// set the user's id to this session even if err != nil,
 	// the zero id doesn't matters because .getCurrentUserID() checks for that.
 	// If err != nil then it will be shown, see below on mvc.Response.Err: err.
-	c.Session.Set("username", username)
+	c.LoginUser(username)
 
 	return mvc.Response{
 		// if not nil then this error will be shown instead.
@@ -133,9 +91,9 @@ func (c *UserController) PostRegister() mvc.Result {
 
 // GetLogin handles GET: http://localhost:8080/user/login.
 func (c *UserController) GetLogin() mvc.Result {
-	if c.isLoggedIn() {
+	if c.IsLoggedIn() {
 		// if it's already logged in then destroy the previous session.
-		c.logout()
+		c.Logout()
 	}
 
 	return mvc.View{
@@ -159,7 +117,7 @@ func (c *UserController) PostLogin() mvc.Result {
 		return mvc.Response{Err: errors.New("email or username is incorrect")}
 	}
 
-	c.Session.Set("username", username)
+	c.LoginUser(username)
 
 	return mvc.Response{
 		Path: "/user/me",
@@ -168,9 +126,9 @@ func (c *UserController) PostLogin() mvc.Result {
 
 // GetMe handles GET: http://localhost:8080/user/me.
 func (c *UserController) GetMe() mvc.Result {
-	username := c.Session.Get("username")
+	username := c.LoggedUser()
 	fmt.Println(username)
-	if !c.isLoggedIn() {
+	if !c.IsLoggedIn() {
 		// if it's not logged in then redirect user to the login page.
 		return mvc.Response{Path: "/user/login"}
 	}
@@ -187,8 +145,8 @@ func (c *UserController) GetMe() mvc.Result {
 
 // AnyLogout handles All/Any HTTP Methods for: http://localhost:8080/user/logout.
 func (c *UserController) AnyLogout() {
-	if c.isLoggedIn() {
-		c.logout()
+	if c.IsLoggedIn() {
+		c.Logout()
 	}
 	c.Ctx.Redirect("/")
 }

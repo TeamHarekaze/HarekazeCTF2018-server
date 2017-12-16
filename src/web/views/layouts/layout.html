@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="jp"></html>
+    <head>
+        <title>{{ .Title }}</title>
+
+        <!-- meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="Harekaze is a Japanese Capture The Flag (CTF) team.">
+        <meta name="author" content="TeamHarekaze">
+        <link rel="canonical" href="https://ctf.harekaze.com">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="Team:Harekaze">
+        <meta property="og:url" content="https://ctf.harekaze.com">
+        <meta property="og:image" content="/asset/img/favicon.png">
+        <meta property="og:site_name" content="Harekaze">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@TeamHarekaze">
+        <meta name="twitter:title" content="Team:Harekaze">
+        <meta name="twitter:description" content="Harekaze is a Japanese Capture The Flag (CTF) team.">
+        <meta name="twitter:image" content="/asset/img/favicon.png">
+
+        <link rel="icon" href="/asset/img/favicon.png">
+        <link rel="stylesheet" href="/asset/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/asset/css/style.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+
+    </head>
+    <body>
+        <!-- header -->
+        <header class="navbar navbar-expand-lg navbar-toggleable-md navbar-light bg-faded">
+            <nav class="container">
+                <a class="navbar-brand" href="/"><img src="/asset/img/favicon.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">Harekaze</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Question"><i class="fa fa-question-circle" aria-hidden="true"></i> Questions</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="Ranking"><i class="fa fa-table" aria-hidden="true"></i> Ranking</a>
+                    </li>
+                    <!-- <li class="nav-item ">
+                        <a class="nav-link" href="/contact"><i class="fa fa-address-card-o" aria-hidden="true"></i> Contact</a>
+                    </li> -->
+                  
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        {{ yield }}
+        
+        <footer class="footer">
+            <a href="/"><span>&copy; 2016-2017 Harekaze</span></a>
+        </footer>
+        
+        <!-- <script src="/asset/js/jquery-3.1.1.slim.min.js"></script>
+        <script src="/asset/'js/tether.js"></script>
+        <script src="/asset/js/bootstrap.min.js"></script> -->
+
+        <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+        <script src="/asset/js/markdown.preview.js"></script>
+    </body>
+</html>

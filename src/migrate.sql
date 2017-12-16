@@ -4,7 +4,7 @@ CREATE TABLE user (
     `name` VARCHAR(40) UNIQUE NOT NULL,
     `email` VARCHAR(40) UNIQUE NOT NULL,
     `enable` INT(1) DEFAULT '0',
-    `hashed_password` VARCHAR(256)
+    `hashed_password` VARCHAR(512)
 )DEFAULT CHARSET=utf8;
 
 CREATE TABLE user_forget (

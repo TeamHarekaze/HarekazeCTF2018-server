@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/sessions"
 	"log"
 	"os"
 	"time"
+
+	"github.com/joho/godotenv"
+	"github.com/kataras/iris"
+	"github.com/kataras/iris/sessions"
 
 	"./web/controllers"
 )
@@ -32,7 +33,7 @@ func main() {
 	})
 
 	//route
-	app.Controller("/", new(controllers.HomeController))
+	app.Controller("/", new(controllers.HomeController), sessionManager)
 	app.Controller("/user", new(controllers.UserController), sessionManager)
 
 	// Run!!

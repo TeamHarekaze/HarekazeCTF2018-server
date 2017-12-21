@@ -1,0 +1,32 @@
+<section>
+    <header class="section-header">
+        <h2 >{{.Title}}</h2>
+    </header>
+    <div class="container">
+        <a href="/{{$.AdminHash}}/question/add"><button type="button" class="btn btn-success">Add</button></a>
+    </div>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Flag</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Questions}}
+                    <tr>
+                        <th scope="row">{{.Id}}</th>
+                        <td>{{.Name}}</td>
+                        <td>{{.Flag}}</td>
+                        <td><a href="/{{$.AdminHash}}/question/edit/{{.Id}}"><button type="button" class="btn btn-success">Edit</button></a></td>
+                        <td><a href="/{{$.AdminHash}}/question/delete/{{.Id}}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+                    </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</section>

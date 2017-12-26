@@ -95,7 +95,7 @@ func (m *UserModel) FindId(id int) (User, error) {
 	if err != nil {
 		return user, errors.New("Database error")
 	}
-	if err := stmtOut.QueryRow(id).Scan(&user.id, &user.name, &user.email, &user.enable); err != nil {
+	if stmtOut.QueryRow(id).Scan(&user.id, &user.name, &user.email, &user.enable) != nil {
 		return user, errors.New("Database error")
 	}
 	return user, nil
@@ -110,8 +110,7 @@ func (m *UserModel) Add(name string, email string, password string) error {
 	if err != nil {
 		return errors.New("Database : query error")
 	}
-	// error is here...why err == nil
-	if err := stmtOut.QueryRow(name, email, hashedPassword); err == nil {
+	if stmtOut.QueryRow(name, email, hashedPassword) == nil {
 		fmt.Println(err)
 		return errors.New("Database error")
 	}
@@ -129,7 +128,7 @@ func (m *UserModel) PasswordCheck(email string, password string) (string, error)
 		return "", err
 	}
 
-	if err := stmtOut.QueryRow(email, hashedPassword).Scan(&name); err != nil {
+	if stmtOut.QueryRow(email, hashedPassword).Scan(&name) == nil {
 		return "", err
 	}
 	return name, nil
@@ -143,7 +142,7 @@ func (m *UserModel) Enable(id int) error {
 	if err != nil {
 		return errors.New("Database error")
 	}
-	if err := stmtOut.QueryRow(id); err != nil {
+	if stmtOut.QueryRow(id) == nil {
 		return errors.New("Database error")
 	}
 	return nil
@@ -157,7 +156,7 @@ func (m *UserModel) Disenable(id int) error {
 	if err != nil {
 		return errors.New("Database : query error")
 	}
-	if err := stmtOut.QueryRow(id); err != nil {
+	if stmtOut.QueryRow(id) == nil {
 		return errors.New("Database error")
 	}
 	return nil

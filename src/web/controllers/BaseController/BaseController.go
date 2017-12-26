@@ -64,5 +64,7 @@ func (c *Base) MakeToken() string {
 
 // CheckTaken is check taken
 func (c *Base) CheckTaken(taken string) bool {
-	return c.Session.Get("_csrfToken") == taken
+	r := c.Session.Get("_csrfToken") == taken
+	c.Session.Delete("_csrfToken")
+	return r
 }

@@ -31,7 +31,10 @@ func (c *UserController) GetRegister() mvc.Result {
 
 	return mvc.View{
 		Name: "user/register.html",
-		Data: context.Map{"Title": "User Registration"},
+		Data: context.Map{
+			"Title": "User Registration",
+			"Token": c.MakeToken(),
+		},
 	}
 }
 
@@ -43,7 +46,12 @@ func (c *UserController) PostRegister() mvc.Result {
 		email                 = c.Ctx.FormValue("email")
 		password              = c.Ctx.FormValue("password")
 		password_confirmation = c.Ctx.FormValue("password_confirmation")
+		token                 = c.Ctx.FormValue("csrf_token")
 	)
+	if !c.CheckTaken(token) {
+		err := errors.New("token error!!")
+		return mvc.Response{Err: err, Code: 400}
+	}
 	if !regexp.MustCompile(`^[a-zA-Z0-9]+$`).MatchString(username) {
 		err := errors.New("User name is 'a-z A-Z 0-9' only")
 		return mvc.Response{Err: err}
@@ -100,6 +108,7 @@ func (c *UserController) GetLogin() mvc.Result {
 		Name: "user/login.html",
 		Data: context.Map{
 			"Title": "User Login",
+			"Token": c.MakeToken(),
 		},
 	}
 }
@@ -109,7 +118,13 @@ func (c *UserController) PostLogin() mvc.Result {
 	var (
 		email    = c.Ctx.FormValue("email")
 		password = c.Ctx.FormValue("password")
+		token    = c.Ctx.FormValue("csrf_token")
 	)
+
+	if !c.CheckTaken(token) {
+		err := errors.New("token error!!")
+		return mvc.Response{Err: err, Code: 400}
+	}
 
 	userModel := UserModel.New()
 	username, err := userModel.PasswordCheck(email, password)

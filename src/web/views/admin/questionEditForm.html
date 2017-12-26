@@ -20,6 +20,7 @@
                 <label>Sentence (MarkDown)</label>
                 <textarea class="form-control" name="sentence">{{ .Question.Sentence }}</textarea>
             </div>
+            <input type="hidden" name="csrf_token" value="{{ .Token }}">
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>

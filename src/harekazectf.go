@@ -42,6 +42,9 @@ func main() {
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question/add", new(controllers.AdminQuestionAdd), sessionManager)
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question/edit", new(controllers.AdminQuestionEdit), sessionManager)
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question/delete", new(controllers.AdminQuestionDelete), sessionManager)
+	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/team", new(controllers.AdminTeamList), sessionManager)
+	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/team/enable", new(controllers.AdminTeamEnable), sessionManager)
+	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/team/disable", new(controllers.AdminTeamDisable), sessionManager)
 	fmt.Printf("admin url is http://localhost:%s/%s\n", os.Getenv("APP_PORT"), os.Getenv("APP_ADMIN_HASH"))
 
 	// Run!!

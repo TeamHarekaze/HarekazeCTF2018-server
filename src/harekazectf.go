@@ -38,7 +38,7 @@ func main() {
 	app.Controller("/user", new(controllers.UserController), sessionManager)
 	//admin
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH"), new(controllers.Admin), sessionManager)
-	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question", new(controllers.AdminQuestion), sessionManager)
+	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question", new(controllers.AdminQuestionList), sessionManager)
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question/add", new(controllers.AdminQuestionAdd), sessionManager)
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question/edit", new(controllers.AdminQuestionEdit), sessionManager)
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question/delete", new(controllers.AdminQuestionDelete), sessionManager)

@@ -23,6 +23,7 @@ func (c *AdminQuestionAdd) Get() mvc.Result {
 		Data: context.Map{
 			"Title":     "Question Add",
 			"AdminHash": os.Getenv("APP_ADMIN_HASH"),
+			"Token":     c.MakeToken(),
 		},
 	}
 }
@@ -34,7 +35,12 @@ func (c *AdminQuestionAdd) Post() mvc.Result {
 		flag     = c.Ctx.FormValue("flag")
 		score    = c.Ctx.FormValue("score")
 		sentence = c.Ctx.FormValue("sentence")
+		token    = c.Ctx.FormValue("csrf_token")
 	)
+	if !c.CheckTaken(token) {
+		err := errors.New("token error!!")
+		return mvc.Response{Err: err, Code: 400}
+	}
 	if !regexp.MustCompile(`^[0-9]+$`).MatchString(score) {
 		err := errors.New("Score is number!!")
 		return mvc.Response{Err: err, Code: 500}

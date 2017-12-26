@@ -9,14 +9,14 @@ import (
 	"github.com/kataras/iris/mvc"
 )
 
-// AdminQuestion override BaseController
-type AdminQuestion struct {
+// AdminQuestionList override BaseController
+type AdminQuestionList struct {
 	BaseController.Base
 }
 
 // Get handles GET: http://localhost:8080/<APP_ADMIN_HASH>/question.
 // Display question list
-func (c *AdminQuestion) Get() mvc.Result {
+func (c *AdminQuestionList) Get() mvc.Result {
 	questionModel := QuestionModel.New()
 	questions, _ := questionModel.FindAll()
 	return mvc.View{

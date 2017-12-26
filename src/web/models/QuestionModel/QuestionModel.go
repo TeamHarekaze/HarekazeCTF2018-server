@@ -60,9 +60,9 @@ func (m *QuestionModel) FindId(id int) (Question, error) {
 	var question Question
 	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("SELECT id, name, flag, score, sentence FROM %s WHERE id = ?", m.Table))
 	if err != nil {
-		return question, errors.New("Database error")
+		return question, errors.New("Database query error")
 	}
-	if err := stmtOut.QueryRow(id).Scan(&question.Id, &question.Name, &question.Flag, &question.Score, &question.Sentence); err != nil {
+	if stmtOut.QueryRow(id).Scan(&question.Id, &question.Name, &question.Flag, &question.Score, &question.Sentence) != nil {
 		return question, errors.New("Database error")
 	}
 	return question, nil
@@ -77,8 +77,7 @@ func (m *QuestionModel) Save(name string, flag string, score string, sentence st
 	if err != nil {
 		return errors.New("Database : query error")
 	}
-	// error is here...why err == nil
-	if err := stmtOut.QueryRow(name, flag, score, sentence); err == nil {
+	if stmtOut.QueryRow(name, flag, score, sentence) == nil {
 		fmt.Println(err)
 		return errors.New("Database error")
 	}
@@ -94,8 +93,7 @@ func (m *QuestionModel) Update(questionId int, name string, flag string, score s
 	if err != nil {
 		return errors.New("Database : query error")
 	}
-	// error is here...why err == nil
-	if err := stmtOut.QueryRow(name, flag, score, sentence, questionId); err == nil {
+	if stmtOut.QueryRow(name, flag, score, sentence, questionId) == nil {
 		fmt.Println(err)
 		return errors.New("Database error")
 	}
@@ -111,8 +109,7 @@ func (m *QuestionModel) Delete(questionId int) error {
 	if err != nil {
 		return errors.New("Database : query error")
 	}
-	// error is here...why err == nil
-	if err := stmtOut.QueryRow(questionId); err == nil {
+	if stmtOut.QueryRow(questionId) == nil {
 		fmt.Println(err)
 		return errors.New("Database error")
 	}

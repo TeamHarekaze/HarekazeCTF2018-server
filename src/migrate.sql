@@ -25,6 +25,7 @@ CREATE TABLE user_register (
 CREATE TABLE team (
     `id` INT(60) PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(40) UNIQUE NOT NULL,
+    `enable` INT(1) DEFAULT '1',
     `hashed_password` VARCHAR(256)
 )DEFAULT CHARSET=utf8;
 

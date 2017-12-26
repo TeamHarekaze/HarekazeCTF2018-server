@@ -1,0 +1,35 @@
+<section>
+    <header class="section-header">
+        <h2 >{{.Title}}</h2>
+    </header>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Teams}}
+                    <tr>
+                        <th scope="row">{{.Id}}</th>
+                        <td>{{.Name}}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                            {{if .Enable}}
+                                <a href="/{{$.AdminHash}}/team/enable/{{.Id}}"><button type="button" class="btn btn-secondary" disabled>Enable</button></a>
+                                <a href="/{{$.AdminHash}}/team/disable/{{.Id}}"><button type="button" class="btn btn-secondary btn-danger">Disable</button></a>
+                            {{else}}
+                                <a href="/{{$.AdminHash}}/team/enable/{{.Id}}"><button type="button" class="btn btn-secondary btn-success">Enable</button></a>
+                                <a href="/{{$.AdminHash}}/team/disable/{{.Id}}"><button type="button" class="btn btn-secondary" disabled>Disable</button></a>
+                            {{end}}
+                            </div>
+                        </td>
+                    </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</section>

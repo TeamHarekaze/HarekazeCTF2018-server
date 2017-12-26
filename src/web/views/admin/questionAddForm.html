@@ -1,0 +1,26 @@
+<section>
+    <header class="section-header">
+        <h2 >{{.Title}}</h2>
+    </header>
+    <div class="container">
+        <form action="" method="POST">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" name="name">
+            </div>
+            <div class="form-group">
+                <label>FLAG</label>
+                <input type="text" class="form-control" name="flag" value="HarekazeCTF{xxxxxx}">
+            </div>
+            <div class="form-group">
+                <label>Score</label>
+                <input type="text" class="form-control" name="score" placeholder="100-500">
+            </div>
+            <div class="form-group">
+                <label>Sentence (MarkDown)</label>
+                <textarea class="form-control" name="sentence"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</section>

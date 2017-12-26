@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"../models"
+	"../models/UserModel"
 	"./BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"

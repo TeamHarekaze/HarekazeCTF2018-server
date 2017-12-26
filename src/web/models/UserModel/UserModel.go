@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"./BaseModel"
+	"../BaseModel"
 )
 
 const (

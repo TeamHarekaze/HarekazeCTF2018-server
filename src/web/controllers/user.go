@@ -43,25 +43,19 @@ func (c *UserController) GetRegister() mvc.Result {
 func (c *UserController) PostRegister() mvc.Result {
 	// get firstname, username and password from the form.
 	var (
-		username                   = c.Ctx.FormValue("username")
-		email                      = c.Ctx.FormValue("email")
-		password                   = c.Ctx.FormValue("password")
-		password_confirmation      = c.Ctx.FormValue("password_confirmation")
-		makejointeam               = c.Ctx.FormValue("makejointeam")
-		team_name                  = c.Ctx.FormValue("team_name")
-		team_password              = c.Ctx.FormValue("team_password")
-		team_password_confirmation = c.Ctx.FormValue("team_password_confirmation")
-		token                      = c.Ctx.FormValue("csrf_token")
+		username                        = c.Ctx.FormValue("username")
+		email                           = c.Ctx.FormValue("email")
+		password                        = c.Ctx.FormValue("password")
+		password_confirmation           = c.Ctx.FormValue("password_confirmation")
+		makejointeam                    = c.Ctx.FormValue("makejointeam")
+		make_team_name                  = c.Ctx.FormValue("make_team_name")
+		make_team_password              = c.Ctx.FormValue("make_team_password")
+		make_team_password_confirmation = c.Ctx.FormValue("make_team_password_confirmation")
+		join_team_name                  = c.Ctx.FormValue("join_team_name")
+		join_team_password              = c.Ctx.FormValue("join_team_password")
+		token                           = c.Ctx.FormValue("csrf_token")
 	)
-	fmt.Printf("username : %s\n", username)
-	fmt.Printf("email : %s\n", email)
-	fmt.Printf("password : %s\n", password)
-	fmt.Printf("password_confirmation : %s\n", password_confirmation)
-	fmt.Printf("makejointeam : %s\n", makejointeam)
-	fmt.Printf("team_name : %s\n", team_name)
-	fmt.Printf("team_password : %s\n", team_password)
-	fmt.Printf("team_password_confirmation : %s\n", team_password_confirmation)
-	fmt.Printf("token : %s\n", token)
+
 	if !c.CheckTaken(token) {
 		err := errors.New("token error!!")
 		return mvc.Response{Err: err, Code: 400}
@@ -78,9 +72,9 @@ func (c *UserController) PostRegister() mvc.Result {
 	} else if makejointeam != "join_team" && makejointeam != "make_team" {
 		return mvc.Response{Err: errors.New("unkown radio status")}
 	} else if makejointeam == "make_team" {
-		if team_name == "" || team_password == "" {
+		if make_team_name == "" || make_team_password == "" {
 			return mvc.Response{Err: errors.New("team name or team password is null")}
-		} else if team_password != team_password_confirmation {
+		} else if make_team_password != make_team_password_confirmation {
 			return mvc.Response{Err: errors.New("Team passwords do not match")}
 		}
 	}
@@ -90,7 +84,7 @@ func (c *UserController) PostRegister() mvc.Result {
 
 	// team password check
 	if makejointeam == "join_team" {
-		status, err := teamModel.PasswordCheck(team_name, team_password)
+		status, err := teamModel.PasswordCheck(join_team_name, join_team_password)
 		if err != nil {
 			return mvc.Response{Err: err}
 		}
@@ -106,7 +100,7 @@ func (c *UserController) PostRegister() mvc.Result {
 		return mvc.Response{Err: err}
 	}
 	if makejointeam == "make_team" {
-		teamnameUsed, err := teamModel.UsedChack(team_name)
+		teamnameUsed, err := teamModel.UsedChack(make_team_name)
 		if err != nil {
 			return mvc.Response{Err: err}
 		}
@@ -115,20 +109,23 @@ func (c *UserController) PostRegister() mvc.Result {
 		}
 	}
 
-	//add
-	err = userModel.Add(username, email, password)
-	if err != nil {
-		return mvc.Response{Err: err}
-	}
+	//add team
 	if makejointeam == "make_team" {
-		err = teamModel.Add(team_name, password)
+		err = teamModel.Add(make_team_name, make_team_password)
 		if err != nil {
 			return mvc.Response{Err: err}
 		}
 	}
-
-	// join team
-	teamModel.Join(team_name, username)
+	//get team name
+	teamName := join_team_name
+	if makejointeam == "make_team" {
+		teamName = make_team_name
+	}
+	//add user
+	err = userModel.Add(username, email, password, teamName)
+	if err != nil {
+		return mvc.Response{Err: err}
+	}
 
 	// create the new user, the password will be hashed by the service.
 	// u, err := c.Service.Create(password, datamodels.User{

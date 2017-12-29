@@ -151,22 +151,6 @@ func (m *TeamModel) Add(name string, password string) error {
 	return nil
 }
 
-func (m *TeamModel) Join(teamName string, userName string) error {
-	m.Open()
-	defer m.Close()
-
-	query := "INSERT INTO team_member (team_id, user_id) SELECT id ,(SELECT id FROM team WHERE name = ?) FROM user WHERE name = ?"
-	stmtOut, err := m.Connection.Prepare(query)
-	if err != nil {
-		return errors.New("Database : query error")
-	}
-	if stmtOut.QueryRow(teamName, userName) == nil {
-		fmt.Println(err)
-		return errors.New("Database error")
-	}
-	return nil
-}
-
 // func (m *TeamModel) FindMember(id int) ([]string, error) {
 // 	m.Open()
 // 	defer m.Close()

@@ -30,7 +30,7 @@ func main() {
 	// make session manager
 	sessionManager := sessions.New(sessions.Config{
 		Cookie:  "HarekazeCTF-session",
-		Expires: 1 * time.Minute,
+		Expires: 30 * time.Minute,
 	})
 
 	//route

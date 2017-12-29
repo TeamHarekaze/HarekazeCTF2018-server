@@ -64,6 +64,23 @@ func (m *UserModel) All() ([]User, error) {
 	}
 	return users, nil
 }
+func (m *UserModel) GetNameFromEmail(email string) (string, error) {
+	m.Open()
+	defer m.Close()
+
+	var name string
+	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("SELECT name FROM %s WHERE email = ?", m.Table))
+	if err != nil {
+		return "", errors.New("Database : query error")
+	}
+	if stmtOut.QueryRow(email).Scan(&name) != nil {
+		return "", errors.New("Database error")
+	}
+	if name == "" {
+		return "", errors.New("user not found")
+	}
+	return name, nil
+}
 
 func (m *UserModel) AllEnable() ([]User, error) {
 	m.Open()
@@ -117,21 +134,21 @@ func (m *UserModel) Add(name string, email string, password string) error {
 	return nil
 }
 
-func (m *UserModel) PasswordCheck(email string, password string) (string, error) {
+func (m *UserModel) PasswordCheck(email string, password string) (bool, error) {
 	m.Open()
 	defer m.Close()
 
-	var name string
 	hashedPassword := GenerateHashedPassword(password)
-	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("SELECT name FROM %s WHERE email = ? AND hashed_password = ?", m.Table))
+	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("SELECT COUNT(name) FROM %s WHERE email = ? AND hashed_password = ?", m.Table))
 	if err != nil {
-		return "", err
+		return false, errors.New("Database : query error")
 	}
 
-	if stmtOut.QueryRow(email, hashedPassword).Scan(&name) == nil {
-		return "", err
+	var count int
+	if stmtOut.QueryRow(email, hashedPassword).Scan(&count) != nil {
+		return false, errors.New("email or username is incorrect")
 	}
-	return name, nil
+	return count == 1, nil
 }
 
 func (m *UserModel) Enable(id int) error {

@@ -185,11 +185,18 @@ func (c *UserController) PostLogin() mvc.Result {
 	}
 
 	userModel := UserModel.New()
-	username, err := userModel.PasswordCheck(email, password)
+	existence, err := userModel.PasswordCheck(email, password)
 	if err != nil {
-		return mvc.Response{Err: errors.New("email or username is incorrect")}
+		return mvc.Response{Err: err}
 	}
+	if existence == false {
+		return mvc.Response{Err: errors.New("user not found")}
+	}
+	username, err := userModel.GetNameFromEmail(email)
+	if err != nil {
 
+		return mvc.Response{Err: err}
+	}
 	c.LoginUser(username)
 
 	return mvc.Response{

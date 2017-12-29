@@ -1,0 +1,25 @@
+<section>
+    <header class="section-header">
+        <h2 >{{.Title}}</h2>
+    </header>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Ranks}}
+                    <tr>
+                        <th scope="row">{{.Rank}}</th>
+                        <td>{{.Name}}</td>
+                        <th scope="row">{{.Score}}</th>
+                    </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</section>

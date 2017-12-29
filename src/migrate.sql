@@ -5,7 +5,7 @@ CREATE TABLE `user` (
     `email` VARCHAR(40) UNIQUE NOT NULL,
     `enable` boolean DEFAULT true,
     `hashed_password` VARCHAR(512),
-    `team_id` INT(60),
+    `team_id` INT(60) NOT NULL,
     `forget_hash` VARCHAR(512) DEFAULT NULL,
     `register_hash` VARCHAR(512) DEFAULT NULL
 )DEFAULT CHARSET=utf8;

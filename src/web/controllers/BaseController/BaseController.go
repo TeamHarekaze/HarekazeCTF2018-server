@@ -44,6 +44,11 @@ func (c *Base) IsLoggedIn() bool {
 	return c.Session.Get("username") != nil
 }
 
+// GetLoggedUserName is Check login status
+func (c *Base) GetLoggedUserName() string {
+	return c.Session.GetString("username")
+}
+
 // Logout is logout
 func (c *Base) Logout() {
 	c.Session.Delete("username")

@@ -25,6 +25,7 @@ CREATE TABLE `question` (
     `name` VARCHAR(40) UNIQUE NOT NULL,
     `flag` VARCHAR(40),
     `score` INT(60),
+    `publish_start_time` TIMESTAMP NOT NULL DEFAULT NOW(),
     `sentence` TEXT
 )DEFAULT CHARSET=utf8;
 
@@ -33,7 +34,7 @@ CREATE TABLE `answer` (
     `user_id` INT(60),
     `question_id` INT(60),
     `flag` VARCHAR(40),
-    `create_time` DATE NOT NULL
+    `create_time` TIMESTAMP(4) NOT NULL DEFAULT CURRENT_TIMESTAMP(4)
 )DEFAULT CHARSET=utf8;
 
 CREATE TABLE `genre_type` (

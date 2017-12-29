@@ -118,16 +118,16 @@ func (m *UserModel) FindId(id int) (User, error) {
 	return user, nil
 }
 
-func (m *UserModel) Add(name string, email string, password string) error {
+func (m *UserModel) Add(name string, email string, password string, teamName string) error {
 	m.Open()
 	defer m.Close()
 
 	hashedPassword := GenerateHashedPassword(password)
-	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("INSERT INTO %s (name, email, hashed_password) VALUES(?, ?, ?)", m.Table))
+	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("INSERT INTO %s (name, email, hashed_password, team_id) SELECT ?, ?, ?, id FROM team WHERE name = ?", m.Table))
 	if err != nil {
 		return errors.New("Database : query error")
 	}
-	if stmtOut.QueryRow(name, email, hashedPassword) == nil {
+	if stmtOut.QueryRow(name, email, hashedPassword, teamName) == nil {
 		fmt.Println(err)
 		return errors.New("Database error")
 	}

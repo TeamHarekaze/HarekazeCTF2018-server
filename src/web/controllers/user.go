@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
+	"../models/TeamModel"
 	"../models/UserModel"
 	"./BaseController"
 	"github.com/kataras/iris/context"
@@ -42,36 +43,93 @@ func (c *UserController) GetRegister() mvc.Result {
 func (c *UserController) PostRegister() mvc.Result {
 	// get firstname, username and password from the form.
 	var (
-		username              = c.Ctx.FormValue("username")
-		email                 = c.Ctx.FormValue("email")
-		password              = c.Ctx.FormValue("password")
-		password_confirmation = c.Ctx.FormValue("password_confirmation")
-		token                 = c.Ctx.FormValue("csrf_token")
+		username                   = c.Ctx.FormValue("username")
+		email                      = c.Ctx.FormValue("email")
+		password                   = c.Ctx.FormValue("password")
+		password_confirmation      = c.Ctx.FormValue("password_confirmation")
+		makejointeam               = c.Ctx.FormValue("makejointeam")
+		team_name                  = c.Ctx.FormValue("team_name")
+		team_password              = c.Ctx.FormValue("team_password")
+		team_password_confirmation = c.Ctx.FormValue("team_password_confirmation")
+		token                      = c.Ctx.FormValue("csrf_token")
 	)
+	fmt.Printf("username : %s\n", username)
+	fmt.Printf("email : %s\n", email)
+	fmt.Printf("password : %s\n", password)
+	fmt.Printf("password_confirmation : %s\n", password_confirmation)
+	fmt.Printf("makejointeam : %s\n", makejointeam)
+	fmt.Printf("team_name : %s\n", team_name)
+	fmt.Printf("team_password : %s\n", team_password)
+	fmt.Printf("team_password_confirmation : %s\n", team_password_confirmation)
+	fmt.Printf("token : %s\n", token)
 	if !c.CheckTaken(token) {
 		err := errors.New("token error!!")
 		return mvc.Response{Err: err, Code: 400}
 	}
-	if !regexp.MustCompile(`^[a-zA-Z0-9]+$`).MatchString(username) {
+	// validation check
+	if username == "" || email == "" || password == "" {
+		return mvc.Response{Err: errors.New("user name or user email or user password is null")}
+	} else if !regexp.MustCompile(`^[a-zA-Z0-9]+$`).MatchString(username) {
 		err := errors.New("User name is 'a-z A-Z 0-9' only")
 		return mvc.Response{Err: err}
 	} else if password != password_confirmation {
-		err := errors.New("Passwords do not match")
+		err := errors.New("User passwords do not match")
 		return mvc.Response{Err: err}
+	} else if makejointeam != "join_team" && makejointeam != "make_team" {
+		return mvc.Response{Err: errors.New("unkown radio status")}
+	} else if makejointeam == "make_team" {
+		if team_name == "" || team_password == "" {
+			return mvc.Response{Err: errors.New("team name or team password is null")}
+		} else if team_password != team_password_confirmation {
+			return mvc.Response{Err: errors.New("Team passwords do not match")}
+		}
 	}
 
+	teamModel := TeamModel.New()
 	userModel := UserModel.New()
-	used, err := userModel.UsedChack(username, email)
-	if used {
+
+	// team password check
+	if makejointeam == "join_team" {
+		status, err := teamModel.PasswordCheck(team_name, team_password)
+		if err != nil {
+			return mvc.Response{Err: err}
+		}
+		if !status {
+			return mvc.Response{Err: errors.New("Team password or Team name do not match")}
+		}
+	}
+
+	//used check
+	usernameUsed, err := userModel.UsedChack(username, email)
+	if usernameUsed {
 		err := errors.New("username or email is already used")
 		return mvc.Response{Err: err}
 	}
+	if makejointeam == "make_team" {
+		teamnameUsed, err := teamModel.UsedChack(team_name)
+		if err != nil {
+			return mvc.Response{Err: err}
+		}
+		if teamnameUsed {
+			return mvc.Response{Err: errors.New("teamname is already used")}
+		}
+	}
+
+	//add
 	err = userModel.Add(username, email, password)
 	if err != nil {
-		fmt.Println(err)
-		err := errors.New("db insert error")
 		return mvc.Response{Err: err}
 	}
+	if makejointeam == "make_team" {
+		err = teamModel.Add(team_name, password)
+		if err != nil {
+			return mvc.Response{Err: err}
+		}
+	}
+
+	// join team
+	teamModel.Join(team_name, username)
+
 	// create the new user, the password will be hashed by the service.
 	// u, err := c.Service.Create(password, datamodels.User{
 	//     Name:  username,

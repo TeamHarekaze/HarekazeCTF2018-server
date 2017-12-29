@@ -38,6 +38,7 @@ func main() {
 	app.Controller("/user", new(controllers.UserController), sessionManager)
 	app.Controller("/question", new(controllers.QuestionController), sessionManager)
 	app.Controller("/answer", new(controllers.AnswerController), sessionManager)
+	app.Controller("/ranking", new(controllers.RankingController), sessionManager)
 	//admin
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH"), new(controllers.Admin), sessionManager)
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question", new(controllers.AdminQuestionList), sessionManager)

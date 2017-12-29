@@ -20,6 +20,7 @@ type Question struct {
 	Flag     string
 	Score    int
 	Sentence string
+	Genre    []string
 }
 
 type QuestionModel struct {
@@ -46,6 +47,26 @@ func (m *QuestionModel) FindAll() ([]Question, error) {
 	for rows.Next() {
 		var question Question
 		if err := rows.Scan(&question.Id, &question.Name, &question.Flag, &question.Score, &question.Sentence); err != nil {
+			return questions, errors.New("Database error")
+		}
+		questions = append(questions, question)
+	}
+	return questions, nil
+}
+func (m *QuestionModel) FindAllEnable() ([]Question, error) {
+	m.Open()
+	defer m.Close()
+
+	var questions []Question
+
+	query := fmt.Sprintf("SELECT id, name FROM %s WHERE publish_start_time < NOW()", m.Table)
+	rows, err := m.Connection.Query(query)
+	if err != nil {
+		return nil, errors.New("Database error")
+	}
+	for rows.Next() {
+		var question Question
+		if err := rows.Scan(&question.Id, &question.Name); err != nil {
 			return questions, errors.New("Database error")
 		}
 		questions = append(questions, question)

@@ -36,6 +36,8 @@ func main() {
 	//route
 	app.Controller("/", new(controllers.HomeController), sessionManager)
 	app.Controller("/user", new(controllers.UserController), sessionManager)
+	app.Controller("/question", new(controllers.QuestionController), sessionManager)
+	app.Controller("/answer", new(controllers.AnswerController), sessionManager)
 	//admin
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH"), new(controllers.Admin), sessionManager)
 	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question", new(controllers.AdminQuestionList), sessionManager)

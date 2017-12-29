@@ -1,0 +1,25 @@
+<section>
+    <header class="section-header">
+        <h2 >{{.Title}}</h2>
+    </header>
+    <div class="container">
+        <form action="" method="POST">
+            <div class="form-group">
+                <label>flag</label>
+                <input type="text" class="form-control" name="flag">
+            </div>
+            {{ if .IsCorrected }}
+                <div class="alert alert-success" role="alert">Corrected answer</div>
+            {{end}}
+            {{ if .Message }}
+                <div class="alert alert-{{.MessageType}}" role="alert">{{.Message}}</div>
+            {{end}}
+            <input type="hidden" name="csrf_token" value="{{ .Token }}">
+            {{ if .IsCorrected }}
+                <button type="submit" class="btn btn-primary" disabled>Submit</button>
+            {{else}}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            {{end}}
+        </form>
+    </div>
+</section>

@@ -1,10 +1,9 @@
 package QuestionModel
 
 import (
-	// "fmt"
-
 	"errors"
 	"fmt"
+	"time"
 
 	"../BaseModel"
 )
@@ -21,7 +20,7 @@ type Question struct {
 	Score            int
 	Sentence         string
 	Genre            string
-	PublishStartTime string
+	PublishStartTime time.Time
 }
 
 type QuestionModel struct {
@@ -81,11 +80,12 @@ func (m *QuestionModel) FindId(id int) (Question, error) {
 	defer m.Close()
 
 	var question Question
-	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("SELECT id, name, flag, score, sentence FROM %s WHERE id = ?", m.Table))
+	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("SELECT id, name, flag, score, sentence, genre, publish_start_time FROM %s WHERE id = ?", m.Table))
 	if err != nil {
 		return question, errors.New("Database query error")
 	}
-	if stmtOut.QueryRow(id).Scan(&question.Id, &question.Name, &question.Flag, &question.Score, &question.Sentence) != nil {
+	if stmtOut.QueryRow(id).Scan(&question.Id, &question.Name, &question.Flag, &question.Score,
+		&question.Sentence, &question.Genre, &question.PublishStartTime) != nil {
 		return question, errors.New("Database error")
 	}
 	return question, nil
@@ -123,19 +123,32 @@ func (m *QuestionModel) Save(args map[string]string) error {
 	return nil
 }
 
-func (m *QuestionModel) Update(questionId int, name string, flag string, score string, sentence string) error {
+func (m *QuestionModel) Update(questionId int, args map[string]string) error {
 	m.Open()
 	defer m.Close()
 
-	query := fmt.Sprintf("UPDATE %s SET name = ?, flag = ?, score = ?, sentence = ? WHERE id = ?", m.Table)
+	var query string
+	if args["publish_now"] == "on" {
+		query = fmt.Sprintf("UPDATE %s SET name = ?, flag = ?, score = ?, genre = ?, sentence = ? WHERE id = ?", m.Table)
+	} else {
+		query = fmt.Sprintf("UPDATE %s SET name = ?, flag = ?, score = ?, genre = ?, publish_start_time = ?, sentence = ? WHERE id = ?", m.Table)
+	}
 	stmtOut, err := m.Connection.Prepare(query)
 	if err != nil {
 		return errors.New("Database : query error")
 	}
-	if stmtOut.QueryRow(name, flag, score, sentence, questionId) == nil {
-		fmt.Println(err)
-		return errors.New("Database error")
+	if args["publish_now"] == "on" {
+		if stmtOut.QueryRow(args["name"], args["flag"], args["score"], args["genre"], args["sentence"], questionId) == nil {
+			fmt.Println(err)
+			return errors.New("Database error")
+		}
+	} else {
+		if stmtOut.QueryRow(args["name"], args["flag"], args["score"], args["genre"], args["publish_start_time"], args["sentence"], questionId) == nil {
+			fmt.Println(err)
+			return errors.New("Database error")
+		}
 	}
+
 	return nil
 }
 

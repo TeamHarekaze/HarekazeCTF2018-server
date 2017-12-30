@@ -89,18 +89,34 @@ func (m *QuestionModel) FindId(id int) (Question, error) {
 	return question, nil
 }
 
-func (m *QuestionModel) Save(name string, flag string, score string, sentence string) error {
+func (m *QuestionModel) Save(args map[string]string) error {
 	m.Open()
 	defer m.Close()
 
-	query := fmt.Sprintf("INSERT INTO %s (name, flag, score, sentence) VALUES (?, ?, ?, ?)", m.Table)
+	var query string
+	if args["publish_now"] == "on" {
+		query = fmt.Sprintf(`
+			INSERT INTO %s (name, flag, genre, score, sentence, author_id)
+				SELECT ?, ?, ?, ?, ?, id FROM user WHERE name = ?`, m.Table)
+	} else {
+		query = fmt.Sprintf(`
+		INSERT INTO %s (name, flag, genre, score, publish_start_time, sentence, author_id)
+			SELECT ?, ?, ?, ?, ?, ?, id FROM user WHERE name = ?`, m.Table)
+	}
 	stmtOut, err := m.Connection.Prepare(query)
 	if err != nil {
 		return errors.New("Database : query error")
 	}
-	if stmtOut.QueryRow(name, flag, score, sentence) == nil {
-		fmt.Println(err)
-		return errors.New("Database error")
+	if args["publish_now"] == "on" {
+		if stmtOut.QueryRow(args["name"], args["flag"], args["genre"], args["score"], args["sentence"], args["auther_name"]) == nil {
+			fmt.Println(err)
+			return errors.New("Database error")
+		}
+	} else {
+		if stmtOut.QueryRow(args["name"], args["flag"], args["genre"], args["score"], args["publish_start_time"], args["sentence"], args["auther_name"]) == nil {
+			fmt.Println(err)
+			return errors.New("Database error")
+		}
 	}
 	return nil
 }

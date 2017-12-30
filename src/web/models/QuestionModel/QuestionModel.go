@@ -15,12 +15,13 @@ const (
 )
 
 type Question struct {
-	Id       int
-	Name     string
-	Flag     string
-	Score    int
-	Sentence string
-	Genre    []string
+	Id               int
+	Name             string
+	Flag             string
+	Score            int
+	Sentence         string
+	Genre            string
+	PublishStartTime string
 }
 
 type QuestionModel struct {
@@ -39,15 +40,16 @@ func (m *QuestionModel) FindAll() ([]Question, error) {
 
 	var questions []Question
 
-	query := fmt.Sprintf("SELECT id, name, flag, score, sentence FROM %s", m.Table)
+	query := fmt.Sprintf("SELECT id, name, flag, score, sentence, genre, publish_start_time  FROM %s", m.Table)
 	rows, err := m.Connection.Query(query)
 	if err != nil {
-		return nil, errors.New("Database error")
+		return nil, errors.New("Database query error")
 	}
 	for rows.Next() {
 		var question Question
-		if err := rows.Scan(&question.Id, &question.Name, &question.Flag, &question.Score, &question.Sentence); err != nil {
-			return questions, errors.New("Database error")
+		if err := rows.Scan(&question.Id, &question.Name, &question.Flag, &question.Score,
+			&question.Sentence, &question.Genre, &question.PublishStartTime); err != nil {
+			return questions, err
 		}
 		questions = append(questions, question)
 	}

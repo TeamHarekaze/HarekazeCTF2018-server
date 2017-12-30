@@ -18,7 +18,11 @@ type AdminQuestionList struct {
 // Display question list
 func (c *AdminQuestionList) Get() mvc.Result {
 	questionModel := QuestionModel.New()
-	questions, _ := questionModel.FindAll()
+	questions, err := questionModel.FindAll()
+	if err != nil {
+		return mvc.Response{Err: err}
+	}
+
 	return mvc.View{
 		Name: "admin/questionList.html",
 		Data: context.Map{

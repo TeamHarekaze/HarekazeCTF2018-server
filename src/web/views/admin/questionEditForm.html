@@ -17,6 +17,15 @@
                 <input type="text" class="form-control" name="score" value="{{ .Question.Score }}">
             </div>
             <div class="form-group">
+                <label>Genre</label>
+                <input type="text" class="form-control" name="genre" value="{{ .Question.Genre }}">
+            </div>
+            <div class="form-group">
+                <label>Publish Start Time</label>
+                <input class="form-check-input" type="checkbox" name="publish_now">Publish Now
+                <input type="text" class="form-control" name="publish_start_time" value="{{ .Question.PublishStartTime }}">
+            </div>
+            <div class="form-group">
                 <label>Sentence (MarkDown)</label>
                 <textarea class="form-control" name="sentence">{{ .Question.Sentence }}</textarea>
             </div>

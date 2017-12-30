@@ -16,7 +16,7 @@ type Base struct {
 }
 
 func (m *Base) Open() {
-	adder := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	adder := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_HOST"),

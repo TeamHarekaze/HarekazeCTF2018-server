@@ -3,6 +3,9 @@
         <h2 >{{.Title}}</h2>
     </header>
     <div class="container">
+        {{ md2html .Sentence }}
+    </div>
+    <div class="container">
         <form action="" method="POST">
             <div class="form-group">
                 <label>flag</label>

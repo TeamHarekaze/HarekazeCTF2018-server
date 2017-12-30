@@ -10,6 +10,7 @@ import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
 
+	"./md2html"
 	"./web/controllers"
 )
 
@@ -26,6 +27,7 @@ func main() {
 	app.StaticWeb("/asset", "./web/public") //debug only
 	view := iris.HTML("./web/views", ".html")
 	view.Layout("layouts/layout.html")
+	view.AddFunc("md2html", md2html.Md2Html)
 	app.RegisterView(view)
 	// make session manager
 	sessionManager := sessions.New(sessions.Config{

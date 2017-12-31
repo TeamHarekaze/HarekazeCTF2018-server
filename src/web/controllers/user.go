@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 
 	"../models/TeamModel"
@@ -205,14 +204,10 @@ func (c *UserController) PostLogin() mvc.Result {
 
 // GetMe handles GET: http://localhost:8080/user/me.
 func (c *UserController) GetMe() mvc.Result {
-	username := c.LoggedUser()
-	fmt.Println(username)
 	if !c.IsLoggedIn() {
 		// if it's not logged in then redirect user to the login page.
 		return mvc.Response{Path: "/user/login"}
 	}
-	// username := c.Session.Get("username")
-	fmt.Println(username)
 
 	return mvc.View{
 		Name: "user/me.html",

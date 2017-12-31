@@ -30,11 +30,6 @@ func (c *Base) BeginRequest(ctx context.Context) {
 	c.Session = c.Manager.Start(ctx)
 }
 
-// LoggedUser is return username
-func (c *Base) LoggedUser() string {
-	return c.Session.GetString("username")
-}
-
 // LoginUser is login
 func (c *Base) LoginUser(username string) error {
 	userModel := UserModel.New()

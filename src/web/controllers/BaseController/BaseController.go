@@ -77,6 +77,9 @@ func (c *Base) GetLoggedTeamID() string {
 // Logout is logout
 func (c *Base) Logout() {
 	c.Session.Delete("username")
+	c.Session.Delete("userid")
+	c.Session.Delete("teamname")
+	c.Session.Delete("teamid")
 }
 
 // MakeToken is generate taken and set taken in session.

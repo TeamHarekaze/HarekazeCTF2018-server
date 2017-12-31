@@ -9,14 +9,24 @@
                     <th></th>
                     <th>Name</th>
                     <th>Score</th>
+                    <th>Genre</th>
+                    <th>Auther</th>
+                    <th>Solves</th>
                 </tr>
             </thead>
             <tbody>
                 {{range .Questions}}
                     <tr>
-                        <th scope="row">☆</th>
+                        {{ if .IsSolve }}
+                            <th scope="row">☆</th>
+                        {{else}}
+                            <th scope="row"></th>
+                        {{end}}
                         <td><a href="/answer/{{.Id}}">{{.Name}}</a></td>
                         <th scope="row">{{.Score}}</th>
+                        <th scope="row">{{.Genre}}</th>
+                        <th scope="row">{{.AutherName}}</th>
+                        <th scope="row">{{.SolvesCount}}</th>
                     </tr>
                 {{end}}
             </tbody>

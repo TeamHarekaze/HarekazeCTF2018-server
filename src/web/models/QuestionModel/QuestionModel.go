@@ -20,7 +20,10 @@ type Question struct {
 	Score            int
 	Sentence         string
 	Genre            string
+	AutherName       string
 	PublishStartTime time.Time
+	IsSolve          bool
+	SolvesCount      int
 }
 
 type QuestionModel struct {
@@ -54,20 +57,34 @@ func (m *QuestionModel) FindAll() ([]Question, error) {
 	}
 	return questions, nil
 }
-func (m *QuestionModel) FindAllEnable() ([]Question, error) {
+func (m *QuestionModel) List(userid string) ([]Question, error) {
 	m.Open()
 	defer m.Close()
 
 	var questions []Question
 
-	query := fmt.Sprintf("SELECT id, name FROM %s WHERE publish_start_time < NOW()", m.Table)
-	rows, err := m.Connection.Query(query)
+	query := fmt.Sprintf(`
+		SELECT SUM((CASE WHEN answer.user_id = ? THEN TRUE
+			ELSE  FALSE END)) AS is_solve,
+			question.id,
+			question.name,
+			question.score,
+			question.genre,
+			COUNT(answer.user_id) AS solves_count,
+			user.name AS author_name
+			FROM %s
+			LEFT JOIN answer ON question.id = answer.question_id AND question.flag = answer.flag
+			LEFT JOIN user ON user.id = question.author_id
+				WHERE publish_start_time < NOW()
+			GROUP BY question.id
+	`, m.Table)
+	rows, err := m.Connection.Query(query, userid)
 	if err != nil {
-		return nil, errors.New("Database error")
+		return nil, errors.New("Database query error")
 	}
 	for rows.Next() {
 		var question Question
-		if err := rows.Scan(&question.Id, &question.Name); err != nil {
+		if err := rows.Scan(&question.IsSolve, &question.Id, &question.Name, &question.Score, &question.Genre, &question.SolvesCount, &question.AutherName); err != nil {
 			return questions, errors.New("Database error")
 		}
 		questions = append(questions, question)

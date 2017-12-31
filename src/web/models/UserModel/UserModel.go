@@ -199,3 +199,22 @@ func (m *UserModel) UsedChack(name string, email string) (bool, error) {
 	}
 	return len(users) != 0, nil
 }
+
+func (m *UserModel) GetUserInfo(username string) (string, string, string, error) {
+	m.Open()
+	defer m.Close()
+
+	query := fmt.Sprintf("SELECT user.id, team.id, team.name FROM %s LEFT JOIN team ON  team.id = user.team_id WHERE user.name = ?", m.Table)
+	stmtOut, err := m.Connection.Prepare(query)
+	if err != nil {
+		return "", "", "", errors.New("Database : query error")
+	}
+
+	var userid string
+	var teamname string
+	var teamid string
+	if stmtOut.QueryRow(username).Scan(&userid, &teamname, &teamid) != nil {
+		return "", "", "", errors.New("email or username is incorrect")
+	}
+	return userid, teamname, teamid, nil
+}

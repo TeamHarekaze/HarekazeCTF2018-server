@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"time"
 
+	"../../models/UserModel"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 	"github.com/kataras/iris/sessions"
@@ -35,8 +36,17 @@ func (c *Base) LoggedUser() string {
 }
 
 // LoginUser is login
-func (c *Base) LoginUser(username string) {
+func (c *Base) LoginUser(username string) error {
+	userModel := UserModel.New()
+	userid, teamname, teamid, err := userModel.GetUserInfo(username)
+	if err != nil {
+		return err
+	}
 	c.Session.Set("username", username)
+	c.Session.Set("userid", userid)
+	c.Session.Set("teamname", teamname)
+	c.Session.Set("teamid", teamid)
+	return nil
 }
 
 // IsLoggedIn is Check login status
@@ -47,6 +57,21 @@ func (c *Base) IsLoggedIn() bool {
 // GetLoggedUserName is Check login status
 func (c *Base) GetLoggedUserName() string {
 	return c.Session.GetString("username")
+}
+
+// GetLoggedUserID is return user id
+func (c *Base) GetLoggedUserID() string {
+	return c.Session.GetString("userid")
+}
+
+// GetLoggedTeamName is return team id
+func (c *Base) GetLoggedTeamName() string {
+	return c.Session.GetString("teamname")
+}
+
+// GetLoggedTeamID is return team id
+func (c *Base) GetLoggedTeamID() string {
+	return c.Session.GetString("teamid")
 }
 
 // Logout is logout

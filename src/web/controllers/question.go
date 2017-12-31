@@ -17,7 +17,10 @@ func (c *QuestionController) Get() mvc.Result {
 	// c.GetLoggedUserName()
 
 	questionModel := QuestionModel.New()
-	questions, _ := questionModel.FindAllEnable()
+	questions, err := questionModel.List(c.GetLoggedUserID())
+	if err != nil {
+		return mvc.Response{Err: err}
+	}
 
 	var homeView = mvc.View{
 		Name: "question/questionList.html",

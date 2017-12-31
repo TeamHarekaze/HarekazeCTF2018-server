@@ -190,11 +190,13 @@ func (c *UserController) PostLogin() mvc.Result {
 		return mvc.Response{Err: errors.New("user not found")}
 	}
 	username, err := userModel.GetNameFromEmail(email)
-	if err != nil {
 
+	if err != nil {
 		return mvc.Response{Err: err}
 	}
-	c.LoginUser(username)
+	if c.LoginUser(username) != nil {
+		return mvc.Response{Err: errors.New("session error")}
+	}
 
 	return mvc.Response{
 		Path: "/user/me",
@@ -215,7 +217,10 @@ func (c *UserController) GetMe() mvc.Result {
 	return mvc.View{
 		Name: "user/me.html",
 		Data: context.Map{
-			"User": username,
+			"UserName": c.GetLoggedUserName(),
+			"UserID":   c.GetLoggedUserID(),
+			"TeamName": c.GetLoggedTeamName(),
+			"TeamID":   c.GetLoggedTeamID(),
 		},
 	}
 }

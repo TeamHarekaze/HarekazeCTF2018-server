@@ -213,7 +213,7 @@ func (m *UserModel) GetUserInfo(username string) (string, string, string, error)
 	var userid string
 	var teamname string
 	var teamid string
-	if stmtOut.QueryRow(username).Scan(&userid, &teamname, &teamid) != nil {
+	if stmtOut.QueryRow(username).Scan(&userid, &teamid, &teamname) != nil {
 		return "", "", "", errors.New("email or username is incorrect")
 	}
 	return userid, teamname, teamid, nil

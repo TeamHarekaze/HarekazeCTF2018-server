@@ -29,7 +29,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 	message := ""
 	messageType := ""
 	answerModel := AnswerModel.New()
-	isCorrected, err := answerModel.IsCorrected(questionId, c.GetLoggedUserName())
+	isCorrected, err := answerModel.IsCorrected(questionId, c.GetLoggedTeamID())
 	if err != nil {
 		return mvc.Response{Err: err}
 	}
@@ -73,7 +73,7 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		if err != nil {
 			return mvc.Response{Err: err}
 		}
-		if answerModel.Insert(questionId, c.GetLoggedUserName(), flag) != nil {
+		if answerModel.Insert(questionId, c.GetLoggedUserID(), flag) != nil {
 			return mvc.Response{Err: errors.New("db error")}
 		}
 		message = "Incorrect answer"

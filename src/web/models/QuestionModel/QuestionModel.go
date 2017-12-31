@@ -115,24 +115,22 @@ func (m *QuestionModel) Save(args map[string]string) error {
 	var query string
 	if args["publish_now"] == "on" {
 		query = fmt.Sprintf(`
-			INSERT INTO %s (name, flag, genre, score, sentence, author_id)
-				SELECT ?, ?, ?, ?, ?, id FROM user WHERE name = ?`, m.Table)
+			INSERT INTO %s (name, flag, genre, score, sentence, author_id) VALUES (?, ?, ?, ?, ?, ?)`, m.Table)
 	} else {
 		query = fmt.Sprintf(`
-		INSERT INTO %s (name, flag, genre, score, publish_start_time, sentence, author_id)
-			SELECT ?, ?, ?, ?, ?, ?, id FROM user WHERE name = ?`, m.Table)
+			INSERT INTO %s (name, flag, genre, score, publish_start_time, sentence, author_id) VALUES (?, ?, ?, ?, ?, ?, ?)`, m.Table)
 	}
 	stmtOut, err := m.Connection.Prepare(query)
 	if err != nil {
 		return errors.New("Database : query error")
 	}
 	if args["publish_now"] == "on" {
-		if stmtOut.QueryRow(args["name"], args["flag"], args["genre"], args["score"], args["sentence"], args["auther_name"]) == nil {
+		if stmtOut.QueryRow(args["name"], args["flag"], args["genre"], args["score"], args["sentence"], args["auther_id"]) == nil {
 			fmt.Println(err)
 			return errors.New("Database error")
 		}
 	} else {
-		if stmtOut.QueryRow(args["name"], args["flag"], args["genre"], args["score"], args["publish_start_time"], args["sentence"], args["auther_name"]) == nil {
+		if stmtOut.QueryRow(args["name"], args["flag"], args["genre"], args["score"], args["publish_start_time"], args["sentence"], args["auther_id"]) == nil {
 			fmt.Println(err)
 			return errors.New("Database error")
 		}

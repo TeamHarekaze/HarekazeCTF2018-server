@@ -59,7 +59,7 @@ func (c *AdminQuestionAdd) Post() mvc.Result {
 		"genre":              genre,
 		"publish_now":        publish_now,
 		"publish_start_time": publish_start_time,
-		"auther_name":        c.GetLoggedUserName(),
+		"auther_id":          c.GetLoggedUserID(),
 		"sentence":           sentence,
 	})
 	if err != nil {

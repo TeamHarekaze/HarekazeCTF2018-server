@@ -88,26 +88,27 @@ func (m *AnswerModel) Ranking() ([]Rank, error) {
 
 	var rs []Rank
 	query := fmt.Sprintf(`
-		SELECT team.name as team_name, IFNULL(SUM(answer.score), 0) as score, IFNULL(MAX(update_time), '') as update_time
-			FROM team
-			LEFT JOIN user
-				ON user.team_id = team.id
-			LEFT JOIN (
-				SELECT DISTINCT answer.user_id, question.score as score, answer.create_time as update_time, NULL
-					FROM answer
+		SELECT team_name,
+				SUM(CASE WHEN score_table.create_time = (SELECT MIN(answer.create_time) FROM answer
 						INNER JOIN question
-						ON question.id = answer.question_id
-					UNION (
-						SELECT answer.user_id, 10, NULL, MIN(answer.create_time)
-							FROM answer
-							INNER JOIN question
-								ON question.id = answer.question_id
-								GROUP BY question.id, answer.user_id
-					)
-				) answer
-				ON answer.user_id = user.id
-			GROUP BY team.id
-			ORDER BY score DESC, update_time
+						ON question.id = answer.question_id AND question.flag = answer.flag
+						WHERE question.id = score_table.question_id )
+				THEN score+10
+				ELSE score
+				END ) AS score_sum
+			FROM (
+				SELECT team.name AS team_name, question.id AS question_id, IFNULL(question.score, 0) AS score, MIN(answer.create_time) AS create_time
+					FROM team
+					RIGHT JOIN user
+						ON user.team_id = team.id
+					RIGHT JOIN answer
+						ON answer.user_id = user.id
+					INNER JOIN question
+						ON question.id = answer.question_id AND question.flag = answer.flag
+					GROUP BY team.name, question.id
+				) score_table
+			GROUP BY score_table.team_name
+			ORDER BY score_sum DESC, MAX(create_time)
 	`)
 	rows, err := m.Connection.Query(query)
 	if err != nil {
@@ -116,8 +117,7 @@ func (m *AnswerModel) Ranking() ([]Rank, error) {
 	count := 0
 	for rows.Next() {
 		var r Rank
-		var tmp string
-		if rows.Scan(&r.Name, &r.Score, &tmp) != nil {
+		if rows.Scan(&r.Name, &r.Score) != nil {
 			return rs, errors.New("Database error")
 		}
 		count = count + 1

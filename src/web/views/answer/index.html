@@ -11,14 +11,11 @@
                 <label>flag</label>
                 <input type="text" class="form-control" name="flag">
             </div>
-            {{ if .IsCorrected }}
-                <div class="alert alert-success" role="alert">Corrected answer</div>
-            {{end}}
             {{ if .Message }}
                 <div class="alert alert-{{.MessageType}}" role="alert">{{.Message}}</div>
             {{end}}
             <input type="hidden" name="csrf_token" value="{{ .Token }}">
-            {{ if .IsCorrected }}
+            {{ if .IsSubmitBlock }}
                 <button type="submit" class="btn btn-primary" disabled>Submit</button>
             {{else}}
                 <button type="submit" class="btn btn-primary">Submit</button>

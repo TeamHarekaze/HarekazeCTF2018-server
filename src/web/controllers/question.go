@@ -14,7 +14,14 @@ type QuestionController struct {
 
 // Get handles GET: http://localhost:8080/question.
 func (c *QuestionController) Get() mvc.Result {
-	// c.GetLoggedUserName()
+	if c.IsBeforeCompetition() {
+		return mvc.View{
+			Name: "question/questionNoList.html",
+			Data: context.Map{
+				"Title": "Question",
+			},
+		}
+	}
 
 	questionModel := QuestionModel.New()
 	questions, err := questionModel.List(c.GetLoggedUserID())

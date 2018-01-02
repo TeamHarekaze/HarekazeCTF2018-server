@@ -15,10 +15,30 @@ type AnswerController struct {
 	BaseController.Base
 }
 
+func (c *AnswerController) answerViewTemplete(data context.Map) mvc.View {
+	return mvc.View{
+		Name: "answer/index.html",
+		Data: data,
+	}
+}
+
 // GetBy handles GET: http://localhost:8080/answer/<quesion id>.
 func (c *AnswerController) GetBy(questionId int) mvc.Result {
 	if !c.IsLoggedIn() {
 		return mvc.Response{Path: "/user/login"}
+	} else if c.IsBeforeCompetition() {
+		return mvc.Response{Code: 404}
+	} else if !c.IsNowCompetition() {
+		questionModel := QuestionModel.New()
+		question, _ := questionModel.FindId(questionId)
+		return c.answerViewTemplete(context.Map{
+			"Title":         question.Name,
+			"Sentence":      question.Sentence,
+			"IsSubmitBlock": false,
+			"Message":       "The competition end.",
+			"MessageType":   "danger",
+			"Token":         c.MakeToken(),
+		})
 	}
 
 	questionModel := QuestionModel.New()
@@ -33,24 +53,38 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 	if err != nil {
 		return mvc.Response{Err: err}
 	}
-
-	return mvc.View{
-		Name: "answer/index.html",
-		Data: context.Map{
-			"Title":       question.Name,
-			"Sentence":    question.Sentence,
-			"IsCorrected": isCorrected,
-			"Message":     message,
-			"MessageType": messageType,
-			"Token":       c.MakeToken(),
-		},
+	if isCorrected {
+		message = "Corrected answer"
+		messageType = "success"
 	}
+
+	return c.answerViewTemplete(context.Map{
+		"Title":         question.Name,
+		"Sentence":      question.Sentence,
+		"IsSubmitBlock": isCorrected,
+		"Message":       message,
+		"MessageType":   messageType,
+		"Token":         c.MakeToken(),
+	})
 }
 
 // PostBy handles GET: http://localhost:8080/answer/<quesion id>.
 func (c *AnswerController) PostBy(questionId int) mvc.Result {
 	if !c.IsLoggedIn() {
 		return mvc.Response{Path: "/user/login"}
+	} else if c.IsBeforeCompetition() {
+		return mvc.Response{Code: 404}
+	} else if !c.IsNowCompetition() {
+		questionModel := QuestionModel.New()
+		question, _ := questionModel.FindId(questionId)
+		return c.answerViewTemplete(context.Map{
+			"Title":         question.Name,
+			"Sentence":      question.Sentence,
+			"IsSubmitBlock": true,
+			"Message":       "The competition end.",
+			"MessageType":   "danger",
+			"Token":         c.MakeToken(),
+		})
 	}
 	var (
 		flag  = c.Ctx.FormValue("flag")
@@ -82,18 +116,18 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 			message = "Correct answer"
 			messageType = "success"
 		}
+	} else {
+		message = "Corrected answer"
+		messageType = "success"
 	}
 	questionModel := QuestionModel.New()
 	question, _ := questionModel.FindId(questionId)
-	return mvc.View{
-		Name: "answer/index.html",
-		Data: context.Map{
-			"Title":       question.Name,
-			"Sentence":    question.Sentence,
-			"IsCorrected": isCorrected,
-			"Message":     message,
-			"MessageType": messageType,
-			"Token":       c.MakeToken(),
-		},
-	}
+	return c.answerViewTemplete(context.Map{
+		"Title":         question.Name,
+		"Sentence":      question.Sentence,
+		"IsSubmitBlock": isCorrected,
+		"Message":       message,
+		"MessageType":   messageType,
+		"Token":         c.MakeToken(),
+	})
 }

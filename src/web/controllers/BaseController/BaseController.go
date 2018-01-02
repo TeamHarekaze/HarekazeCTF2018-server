@@ -2,6 +2,7 @@ package BaseController
 
 import (
 	"math/rand"
+	"os"
 	"time"
 
 	"../../models/UserModel"
@@ -80,4 +81,23 @@ func (c *Base) CheckTaken(taken string) bool {
 	r := c.Session.Get("_csrfToken") == taken
 	c.Session.Delete("_csrfToken")
 	return r
+}
+
+func (c *Base) IsNowCompetition() bool {
+	nowTime := time.Now().Unix()
+	startTime, _ := time.Parse("2006-01-02 15:04:05" /*layout*/, os.Getenv("COMPETITION_START_TIME"))
+	endTime, _ := time.Parse("2006-01-02 15:04:05" /*layout*/, os.Getenv("COMPETITION_END_TIME"))
+	if startTime.Unix()-32400 < nowTime && nowTime < endTime.Unix()-32400 {
+		return true
+	}
+	return false
+}
+
+func (c *Base) IsBeforeCompetition() bool {
+	nowTime := time.Now().Unix()
+	startTime, _ := time.Parse("2006-01-02 15:04:05" /*layout*/, os.Getenv("COMPETITION_START_TIME"))
+	if startTime.Unix()-32400 > nowTime {
+		return true
+	}
+	return false
 }

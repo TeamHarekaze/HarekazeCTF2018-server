@@ -8,6 +8,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/kataras/iris"
+	"github.com/kataras/iris/mvc"
 	"github.com/kataras/iris/sessions"
 
 	"./md2html"
@@ -36,20 +37,19 @@ func main() {
 	})
 
 	//route
-	app.Controller("/", new(controllers.HomeController), sessionManager)
-	app.Controller("/user", new(controllers.UserController), sessionManager)
-	app.Controller("/question", new(controllers.QuestionController), sessionManager)
-	app.Controller("/answer", new(controllers.AnswerController), sessionManager)
-	app.Controller("/ranking", new(controllers.RankingController), sessionManager)
+	mvc.New(app.Party("/")).Register(sessionManager.Start).Handle(&controllers.HomeController{})
+	mvc.New(app.Party("/user")).Register(sessionManager.Start).Handle(&controllers.UserController{})
+	mvc.New(app.Party("/question")).Register(sessionManager.Start).Handle(&controllers.QuestionController{})
+	mvc.New(app.Party("/answer")).Register(sessionManager.Start).Handle(&controllers.AnswerController{})
+	mvc.New(app.Party("/ranking")).Register(sessionManager.Start).Handle(&controllers.RankingController{})
 	//admin
-	app.Controller("/"+os.Getenv("APP_ADMIN_HASH"), new(controllers.Admin), sessionManager)
-	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question", new(controllers.AdminQuestionList), sessionManager)
-	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question/add", new(controllers.AdminQuestionAdd), sessionManager)
-	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question/edit", new(controllers.AdminQuestionEdit), sessionManager)
-	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/question/delete", new(controllers.AdminQuestionDelete), sessionManager)
-	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/team", new(controllers.AdminTeamList), sessionManager)
-	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/team/enable", new(controllers.AdminTeamEnable), sessionManager)
-	app.Controller("/"+os.Getenv("APP_ADMIN_HASH")+"/team/disable", new(controllers.AdminTeamDisable), sessionManager)
+	mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH"))).Register(sessionManager.Start).Handle(&controllers.Admin{})
+	mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH") + "/question")).Register(sessionManager.Start).Handle(&controllers.AdminQuestionList{})
+	mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH") + "/question/add")).Register(sessionManager.Start).Handle(&controllers.AdminQuestionAdd{})
+	mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH") + "/question/edit")).Register(sessionManager.Start).Handle(&controllers.AdminQuestionEdit{})
+	mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH") + "/question/delete")).Register(sessionManager.Start).Handle(&controllers.AdminQuestionDelete{})
+	mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH") + "/team/enable")).Register(sessionManager.Start).Handle(&controllers.AdminTeamEnable{})
+	mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH") + "/team/disable")).Register(sessionManager.Start).Handle(&controllers.AdminTeamDisable{})
 	fmt.Printf("admin url is http://localhost:%s/%s\n", os.Getenv("APP_PORT"), os.Getenv("APP_ADMIN_HASH"))
 
 	// Run!!

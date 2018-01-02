@@ -5,29 +5,14 @@ import (
 	"time"
 
 	"../../models/UserModel"
-	"github.com/kataras/iris/context"
-	"github.com/kataras/iris/mvc"
+	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
 )
 
 // Base is super struct
 type Base struct {
-	mvc.C
-	Manager *sessions.Sessions
+	Ctx     iris.Context
 	Session *sessions.Session
-}
-
-// BeginRequest will set the current session to the controller.
-func (c *Base) BeginRequest(ctx context.Context) {
-	c.C.BeginRequest(ctx)
-
-	if c.Manager == nil {
-		ctx.Application().Logger().Errorf(`UserController: sessions manager is nil, you should bind it`)
-		ctx.StopExecution() // dont run the main method handler and any "done" handlers.
-		return
-	}
-
-	c.Session = c.Manager.Start(ctx)
 }
 
 // LoginUser is login

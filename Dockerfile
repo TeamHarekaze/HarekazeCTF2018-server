@@ -1,5 +1,5 @@
 FROM golang:1.9.2
-MAINTAINER HayatoDoi <nono@nononono.net>
+LABEL maintainer="TeamHarekaze@harekaze.com"
 
 WORKDIR /go/src/app
 COPY src .

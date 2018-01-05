@@ -2,7 +2,7 @@
 - 競技用のCTFスコアサーバ
 
 ## 環境
-- golang : 1.9.2
+- golang > 1.9
 - mysql
 - redis
 

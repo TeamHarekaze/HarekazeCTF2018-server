@@ -54,6 +54,9 @@
                     </ul>
                     <ul>
                         <li class="nav-item">
+                            <a id="countdown-timer" class="nav-link"></a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="/user/login">Login</a>
                         </li>
                         <li class="nav-item">
@@ -79,5 +82,39 @@
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
         <script src="/asset/js/markdown.preview.js"></script>
+
+        <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            var startTime = Date.parse('2018-02-10T15:00:00+0900');
+            var endTime = Date.parse('2018-02-11T15:00:00+0900');
+            var countdown = document.getElementById('countdown-timer');
+            
+            function zfill(s) {
+                return ('00' + s).slice(-2);
+            }
+
+            function format(t) {
+                t /= 1000;
+                var hours = Math.floor(t / 3600);
+                var minutes = Math.floor((t - hours * 3600) / 60);
+                var seconds = Math.floor(t - (hours * 3600) - (minutes * 60));
+                return zfill(hours) + ' h ' + zfill(minutes) + ' m ' + zfill(seconds) + ' s left';
+            }
+
+            function update() {
+                var now = Date.now();
+                if (now < startTime) {
+                    countdown.textContent = '(not started yet)';
+                } else if (endTime < now) {
+                    countdown.textContent = '(ended)';
+                } else {
+                    countdown.textContent = format(endTime - now);
+                }
+            }
+
+            update();
+            setInterval(update, 1000);
+        }, false);
+        </script>
     </body>
 </html>

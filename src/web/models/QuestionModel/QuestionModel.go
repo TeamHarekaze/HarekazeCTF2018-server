@@ -57,28 +57,39 @@ func (m *QuestionModel) FindAll() ([]Question, error) {
 	}
 	return questions, nil
 }
-func (m *QuestionModel) List(userid string) ([]Question, error) {
+func (m *QuestionModel) List(teamName string) ([]Question, error) {
 	m.Open()
 	defer m.Close()
 
 	var questions []Question
 
 	query := fmt.Sprintf(`
-		SELECT SUM((CASE WHEN answer.user_id = ? THEN TRUE
-			ELSE  FALSE END)) AS is_solve,
-			question.id,
-			question.name,
-			question.score,
-			question.genre,
-			COUNT(answer.user_id) AS solves_count,
-			user.name AS author_name
-			FROM %s
-			LEFT JOIN answer ON question.id = answer.question_id AND question.flag = answer.flag
-			LEFT JOIN user ON user.id = question.author_id
+		SELECT
+			SUM((CASE WHEN Q2.answer_team = ? THEN TRUE
+				ELSE  FALSE END)) AS is_solve,
+			Q2.question_id,
+			Q2.question_name,
+			Q2.question_score,
+			Q2.question_genre,
+			COUNT(Q2.answer_team) AS solves_count,
+			Q2.question_author
+		FROM( SELECT DISTINCT
+					question.id AS question_id,
+					question.name AS question_name,
+					question.score AS question_score,
+					question.genre AS question_genre,
+					team.name AS answer_team,
+					author.name AS question_author
+				FROM %s
+				LEFT JOIN answer ON question.id = answer.question_id AND question.flag = answer.flag
+				LEFT JOIN user ON user.id = answer.user_id
+				LEFT JOIN team ON team.id = user.team_id
+				LEFT JOIN user author ON author.id = question.author_id
 				WHERE publish_start_time < NOW()
-			GROUP BY question.id
+			) Q2
+		GROUP BY Q2.question_id
 	`, m.Table)
-	rows, err := m.Connection.Query(query, userid)
+	rows, err := m.Connection.Query(query, teamName)
 	if err != nil {
 		return nil, errors.New("Database query error")
 	}

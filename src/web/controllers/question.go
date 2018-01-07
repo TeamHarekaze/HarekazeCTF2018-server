@@ -24,7 +24,7 @@ func (c *QuestionController) Get() mvc.Result {
 	}
 
 	questionModel := QuestionModel.New()
-	questions, err := questionModel.List(c.GetLoggedUserID())
+	questions, err := questionModel.List(c.GetLoggedTeamName())
 	if err != nil {
 		return mvc.Response{Err: err}
 	}

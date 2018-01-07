@@ -140,12 +140,9 @@ func (m *TeamModel) Add(name string, password string) error {
 	defer m.Close()
 
 	hashedPassword := GenerateHashedPassword(password)
-	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("INSERT INTO %s (name, hashed_password) VALUES(?, ?)", m.Table))
+	query := fmt.Sprintf("INSERT INTO %s (name, hashed_password) VALUES(?, ?)", m.Table)
+	_, err := m.Connection.Exec(query, name, hashedPassword)
 	if err != nil {
-		return errors.New("Database : query error")
-	}
-	if stmtOut.QueryRow(name, hashedPassword) == nil {
-		fmt.Println(err)
 		return errors.New("Database error")
 	}
 	return nil

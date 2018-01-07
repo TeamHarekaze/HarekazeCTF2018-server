@@ -123,12 +123,9 @@ func (m *UserModel) Add(name string, email string, password string, teamName str
 	defer m.Close()
 
 	hashedPassword := GenerateHashedPassword(password)
-	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("INSERT INTO %s (name, email, hashed_password, team_id) SELECT ?, ?, ?, id FROM team WHERE name = ?", m.Table))
+	query := fmt.Sprintf("INSERT INTO %s (name, email, hashed_password, team_id) SELECT ?, ?, ?, id FROM team WHERE name = ?", m.Table)
+	_, err := m.Connection.Exec(query, name, email, hashedPassword, teamName)
 	if err != nil {
-		return errors.New("Database : query error")
-	}
-	if stmtOut.QueryRow(name, email, hashedPassword, teamName) == nil {
-		fmt.Println(err)
 		return errors.New("Database error")
 	}
 	return nil

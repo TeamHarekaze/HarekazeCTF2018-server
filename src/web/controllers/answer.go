@@ -98,7 +98,7 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 	messageType := ""
 
 	answerModel := AnswerModel.New()
-	isCorrected, err := answerModel.IsCorrected(questionId, c.GetLoggedUserName())
+	isCorrected, err := answerModel.IsCorrected(questionId, c.GetLoggedTeamID())
 	if err != nil {
 		return mvc.Response{Err: err}
 	}

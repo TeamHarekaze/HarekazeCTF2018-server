@@ -120,17 +120,16 @@ func (m *QuestionModel) Save(args map[string]string) error {
 		query = fmt.Sprintf(`
 			INSERT INTO %s (name, flag, genre, score, publish_start_time, sentence, author_id) VALUES (?, ?, ?, ?, ?, ?, ?)`, m.Table)
 	}
-	stmtOut, err := m.Connection.Prepare(query)
-	if err != nil {
-		return errors.New("Database : query error")
-	}
+
 	if args["publish_now"] == "on" {
-		if stmtOut.QueryRow(args["name"], args["flag"], args["genre"], args["score"], args["sentence"], args["auther_id"]) == nil {
+		_, err := m.Connection.Exec(query, args["name"], args["flag"], args["genre"], args["score"], args["sentence"], args["auther_id"])
+		if err != nil {
 			fmt.Println(err)
 			return errors.New("Database error")
 		}
 	} else {
-		if stmtOut.QueryRow(args["name"], args["flag"], args["genre"], args["score"], args["publish_start_time"], args["sentence"], args["auther_id"]) == nil {
+		_, err := m.Connection.Exec(query, args["name"], args["flag"], args["genre"], args["score"], args["publish_start_time"], args["sentence"], args["auther_id"])
+		if err != nil {
 			fmt.Println(err)
 			return errors.New("Database error")
 		}

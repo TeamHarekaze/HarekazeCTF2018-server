@@ -73,12 +73,9 @@ func (m *AnswerModel) Insert(questionId int, userId interface{}, flag string) er
 	defer m.Close()
 
 	query := fmt.Sprintf("INSERT INTO %s (user_id, question_id, flag) VALUES( ?, ?, ?)", m.Table)
-	stmtOut, err := m.Connection.Prepare(query)
+	_, err := m.Connection.Exec(query, userId, questionId, flag)
 	if err != nil {
 		return errors.New("Database : query error")
-	}
-	if stmtOut.QueryRow(userId, questionId, flag) == nil {
-		return errors.New("Database error")
 	}
 	return nil
 }

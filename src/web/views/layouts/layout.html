@@ -85,11 +85,15 @@
 
         <script>
         window.addEventListener('DOMContentLoaded', function () {
-            var startTime = Date.parse('2018-02-10T15:00:00+0900');
-            var endTime = Date.parse('2018-02-11T15:00:00+0900');
+            var startTime = 1518242400000;
+            var endTime = 1518328800000;
             var countdown = document.getElementById('countdown-timer');
             
             function zfill(s) {
+                s = '' + s;
+                if (s.length > 2) {
+                    return s;
+                }
                 return ('00' + s).slice(-2);
             }
 

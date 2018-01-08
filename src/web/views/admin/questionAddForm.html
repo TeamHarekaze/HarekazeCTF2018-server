@@ -5,29 +5,32 @@
     <div class="container">
         <form action="" method="POST">
             <div class="form-group">
-                <label>Name</label>
-                <input type="text" class="form-control" name="name">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" name="name" id="name">
             </div>
             <div class="form-group">
-                <label>FLAG</label>
-                <input type="text" class="form-control" name="flag" value="HarekazeCTF{xxxxxx}">
+                <label for="flag">FLAG</label>
+                <input type="text" class="form-control" name="flag" id="flag" value="HarekazeCTF{xxxxxx}">
             </div>
             <div class="form-group">
-                <label>Score</label>
-                <input type="text" class="form-control" name="score" placeholder="100-500">
+                <label for="score">Score</label>
+                <input type="text" class="form-control" name="score" id="score" placeholder="100-500">
             </div>
             <div class="form-group">
-                <label>Genre</label>
-                <input type="text" class="form-control" name="genre">
+                <label for="genre">Genre</label>
+                <input type="text" class="form-control" name="genre" id="genre">
             </div>
             <div class="form-group">
-                <label>Publish Start Time</label>
-                <input class="form-check-input" type="checkbox" name="publish_now">Publish Now
-                <input type="text" class="form-control" name="publish_start_time" placeholder="yyyy-MM-dd HH:mm:ss">
+                <label for="publish_start_time">Publish Start Time</label>
+                <input type="text" class="form-control" name="publish_start_time" id="publish_start_time" placeholder="yyyy-MM-dd HH:mm:ss">
+                <label class="form-check-label">
+                    <input type="checkbox" name="publish_now" id="publish_now">
+                    Publish Now
+                </label>
             </div>
             <div class="form-group">
-                <label>Sentence (MarkDown)</label>
-                <textarea class="form-control" name="sentence"></textarea>
+                <label for="sentence">Sentence (MarkDown)</label>
+                <textarea class="form-control" name="sentence" id="sentence"></textarea>
             </div>
             <input type="hidden" name="csrf_token" value="{{ .Token }}">
             <button type="submit" class="btn btn-primary">Submit</button>

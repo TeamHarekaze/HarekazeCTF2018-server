@@ -18,15 +18,15 @@
                 {{range .Questions}}
                     <tr>
                         {{ if .IsSolve }}
-                            <th scope="row">☆</th>
+                            <td><i class="fa fa-home" aria-hidden="true"></i></th>
                         {{else}}
-                            <th scope="row"></th>
+                            <td></th>
                         {{end}}
                         <td><a href="/answer/{{.Id}}">{{.Name}}</a></td>
-                        <th scope="row">{{.Score}}</th>
-                        <th scope="row">{{.Genre}}</th>
-                        <th scope="row">{{.AutherName}}</th>
-                        <th scope="row">{{.SolvesCount}}</th>
+                        <td>{{.Score}}</th>
+                        <td>{{.Genre}}</th>
+                        <td>{{.AutherName}}</th>
+                        <td>{{.SolvesCount}}</th>
                     </tr>
                 {{end}}
             </tbody>

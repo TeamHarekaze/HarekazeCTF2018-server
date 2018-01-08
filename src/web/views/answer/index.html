@@ -1,6 +1,6 @@
 <section>
     <header class="section-header">
-        <h2 >{{.Title}}</h2>
+        <h2>{{.Title}}</h2>
     </header>
     <div class="container">
         {{ md2html .Sentence }}
@@ -8,8 +8,8 @@
     <div class="container">
         <form action="" method="POST">
             <div class="form-group">
-                <label>flag</label>
-                <input type="text" class="form-control" name="flag">
+                <label for="flag">flag</label>
+                <input type="text" class="form-control" name="flag" id="flag">
             </div>
             {{ if .Message }}
                 <div class="alert alert-{{.MessageType}}" role="alert">{{.Message}}</div>

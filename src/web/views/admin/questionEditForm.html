@@ -5,29 +5,32 @@
     <div class="container">
         <form action="" method="POST">
             <div class="form-group">
-                <label>Name</label>
-                <input type="text" class="form-control" name="name" value="{{ .Question.Name }}">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" name="name" id="name" value="{{ .Question.Name }}">
             </div>
             <div class="form-group">
-                <label>FLAG</label>
-                <input type="text" class="form-control" name="flag" value="{{ .Question.Flag }}">
+                <label for="flag">FLAG</label>
+                <input type="text" class="form-control" name="flag" id="flag" value="{{ .Question.Flag }}">
             </div>
             <div class="form-group">
-                <label>Score</label>
-                <input type="text" class="form-control" name="score" value="{{ .Question.Score }}">
+                <label for="score">Score</label>
+                <input type="text" class="form-control" name="score" id="score" value="{{ .Question.Score }}">
             </div>
             <div class="form-group">
-                <label>Genre</label>
-                <input type="text" class="form-control" name="genre" value="{{ .Question.Genre }}">
+                <label for="genre">Genre</label>
+                <input type="text" class="form-control" name="genre" id="genre" value="{{ .Question.Genre }}">
             </div>
             <div class="form-group">
-                <label>Publish Start Time</label>
-                <input class="form-check-input" type="checkbox" name="publish_now">Publish Now
-                <input type="text" class="form-control" name="publish_start_time" value="{{ .Question.PublishStartTime }}">
+                <label for="publish_start_time">Publish Start Time</label>
+                <input type="text" class="form-control" name="publish_start_time" id="publish_start_time" value="{{ .Question.PublishStartTime }}">
+                <label class="form-check-label">
+                    <input type="checkbox" name="publish_now" id="publish_now">
+                    Publish Now
+                </label>
             </div>
             <div class="form-group">
-                <label>Sentence (MarkDown)</label>
-                <textarea class="form-control" name="sentence">{{ .Question.Sentence }}</textarea>
+                <label for="sentence">Sentence (MarkDown)</label>
+                <textarea class="form-control" name="sentence" id="sentence">{{ .Question.Sentence }}</textarea>
             </div>
             <input type="hidden" name="csrf_token" value="{{ .Token }}">
             <button type="submit" class="btn btn-primary">Submit</button>

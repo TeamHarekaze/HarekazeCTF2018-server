@@ -1,6 +1,7 @@
 package AnswerModel
 
 import (
+	"time"
 	// "fmt"
 
 	"errors"
@@ -15,9 +16,10 @@ const (
 )
 
 type Rank struct {
-	Rank  int
-	Name  string
-	Score int
+	Rank       int
+	Name       string
+	Score      int
+	UpdateTime time.Time
 }
 
 type AnswerModel struct {
@@ -92,7 +94,8 @@ func (m *AnswerModel) Ranking() ([]Rank, error) {
 						WHERE question.id = score_table.question_id )
 				THEN score+10
 				ELSE score
-				END ) AS score_sum
+				END ) AS score_sum,
+				MAX(create_time) AS update_time
 			FROM (
 				SELECT team.name AS team_name, question.id AS question_id, IFNULL(question.score, 0) AS score, MIN(answer.create_time) AS create_time
 					FROM team
@@ -114,7 +117,7 @@ func (m *AnswerModel) Ranking() ([]Rank, error) {
 	count := 0
 	for rows.Next() {
 		var r Rank
-		if rows.Scan(&r.Name, &r.Score) != nil {
+		if rows.Scan(&r.Name, &r.Score, &r.UpdateTime) != nil {
 			return rs, errors.New("Database error")
 		}
 		count = count + 1
@@ -122,4 +125,19 @@ func (m *AnswerModel) Ranking() ([]Rank, error) {
 		rs = append(rs, r)
 	}
 	return rs, nil
+}
+
+func (m *AnswerModel) IsFast(questionID int) (bool, error) {
+	m.Open()
+	defer m.Close()
+	var count int
+	query := fmt.Sprintf("SELECT COUNT(%s.id) FROM %s LEFT JOIN question ON answer.question_id = question.id AND answer.flag = question.flag WHERE question.id = ?", m.Table, m.Table)
+	stmtOut, err := m.Connection.Prepare(query)
+	if err != nil {
+		return false, errors.New("Database query error")
+	}
+	if stmtOut.QueryRow(questionID).Scan(&count) != nil {
+		return false, errors.New("Database error")
+	}
+	return count == 1, nil
 }

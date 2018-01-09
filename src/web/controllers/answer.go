@@ -5,6 +5,7 @@ import (
 
 	"./BaseController"
 
+	"../../redisClient/RankingCache"
 	"../models/AnswerModel"
 	"../models/QuestionModel"
 	"github.com/kataras/iris/context"
@@ -119,6 +120,11 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		message = "Incorrect answer"
 		messageType = "danger"
 		if isCorrect {
+			rankingCache := RankingCache.New()
+			err := rankingCache.Set(c.GetLoggedTeamName(), questionId)
+			if err != nil {
+				return mvc.Response{Err: err}
+			}
 			message = "Correct answer"
 			messageType = "success"
 		}

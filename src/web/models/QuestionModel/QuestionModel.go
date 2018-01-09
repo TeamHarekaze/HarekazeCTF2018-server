@@ -192,3 +192,18 @@ func (m *QuestionModel) Delete(questionId int) error {
 	}
 	return nil
 }
+
+func (m *QuestionModel) GetScore(questionID int) (int, error) {
+	m.Open()
+	defer m.Close()
+	var score int
+	query := fmt.Sprintf("SELECT score FROM %s WHERE id = ?", m.Table)
+	stmtOut, err := m.Connection.Prepare(query)
+	if err != nil {
+		return 0, errors.New("Database query error")
+	}
+	if stmtOut.QueryRow(questionID).Scan(&score) != nil {
+		return 0, errors.New("Database error")
+	}
+	return score, nil
+}

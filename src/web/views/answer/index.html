@@ -10,19 +10,15 @@
     <div class="container">
         <h3>Flag Submission</h3>
         <form action="" method="POST">
-            <div class="form-group">
-                <label for="flag">Flag</label>
-                <input type="text" class="form-control" name="flag" id="flag" placeholder="HarekazeCTF{...}">
-            </div>
             {{ if .Message }}
                 <div class="alert alert-{{.MessageType}}" role="alert">{{.Message}}</div>
             {{end}}
+            <div class="form-group">
+                <label for="flag">Flag</label>
+                <input type="text" class="form-control" name="flag" id="flag" placeholder="HarekazeCTF{...}"{{ if .IsSubmitBlock }} disabled{{end}}>
+            </div>
             <input type="hidden" name="csrf_token" value="{{ .Token }}">
-            {{ if .IsSubmitBlock }}
-                <button type="submit" class="btn btn-primary" disabled>Submit</button>
-            {{else}}
-                <button type="submit" class="btn btn-primary">Submit</button>
-            {{end}}
+            <button type="submit" class="btn btn-primary"{{ if .IsSubmitBlock }} disabled{{end}}>Submit</button>
         </form>
     </div>
 </section>

@@ -56,7 +56,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 		return mvc.Response{Err: err}
 	}
 	if isCorrected {
-		message = "Corrected answer"
+		message = "Question already solved"
 		messageType = "success"
 	}
 
@@ -123,7 +123,7 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 			messageType = "success"
 		}
 	} else {
-		message = "Corrected answer"
+		message = "Question already solved"
 		messageType = "success"
 	}
 	questionModel := QuestionModel.New()

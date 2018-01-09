@@ -8,14 +8,13 @@
         <p>({{.Genre}}, {{.Score}} points)</p>
     </div>
     <div class="container">
-        <h3>Flag Submission</h3>
+        <h3>Answer</h3>
         <form action="" method="POST">
             {{ if .Message }}
                 <div class="alert alert-{{.MessageType}}" role="alert">{{.Message}}</div>
             {{end}}
             <div class="form-group">
-                <label for="flag">Flag</label>
-                <input type="text" class="form-control" name="flag" id="flag" placeholder="HarekazeCTF{...}"{{ if .IsSubmitBlock }} disabled{{end}}>
+                <input type="text" class="form-control" name="flag" id="flag" placeholder="HarekazeCTF{example}"{{ if .IsSubmitBlock }} disabled{{end}}>
             </div>
             <input type="hidden" name="csrf_token" value="{{ .Token }}">
             <button type="submit" class="btn btn-primary"{{ if .IsSubmitBlock }} disabled{{end}}>Submit</button>

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"../../redisClient/RankingCache"
+	"../../redisClient/rankingCache"
 	"./BaseController"
 
 	"github.com/kataras/iris/context"

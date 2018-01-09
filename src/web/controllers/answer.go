@@ -5,7 +5,7 @@ import (
 
 	"./BaseController"
 
-	"../../redisClient/RankingCache"
+	"../../redisClient/rankingCache"
 	"../models/AnswerModel"
 	"../models/QuestionModel"
 	"github.com/kataras/iris/context"

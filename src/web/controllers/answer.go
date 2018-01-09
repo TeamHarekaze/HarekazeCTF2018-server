@@ -34,6 +34,8 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 		return c.answerViewTemplete(context.Map{
 			"Title":         question.Name,
 			"Sentence":      question.Sentence,
+			"Genre":         question.Genre,
+			"Score":         question.Score,
 			"IsSubmitBlock": false,
 			"Message":       "The competition end.",
 			"MessageType":   "danger",
@@ -61,6 +63,8 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 	return c.answerViewTemplete(context.Map{
 		"Title":         question.Name,
 		"Sentence":      question.Sentence,
+		"Genre":         question.Genre,
+		"Score":         question.Score,
 		"IsSubmitBlock": isCorrected,
 		"Message":       message,
 		"MessageType":   messageType,
@@ -80,6 +84,8 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		return c.answerViewTemplete(context.Map{
 			"Title":         question.Name,
 			"Sentence":      question.Sentence,
+			"Genre":         question.Genre,
+			"Score":         question.Score,
 			"IsSubmitBlock": true,
 			"Message":       "The competition end.",
 			"MessageType":   "danger",
@@ -125,6 +131,8 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 	return c.answerViewTemplete(context.Map{
 		"Title":         question.Name,
 		"Sentence":      question.Sentence,
+		"Genre":         question.Genre,
+		"Score":         question.Score,
 		"IsSubmitBlock": isCorrected,
 		"Message":       message,
 		"MessageType":   messageType,

@@ -3,13 +3,16 @@
         <h2>{{.Title}}</h2>
     </header>
     <div class="container">
+        <h3>Description</h3>
         {{ md2html .Sentence }}
+        <p>({{.Genre}}, {{.Score}} points)</p>
     </div>
     <div class="container">
+        <h3>Flag Submission</h3>
         <form action="" method="POST">
             <div class="form-group">
-                <label for="flag">flag</label>
-                <input type="text" class="form-control" name="flag" id="flag">
+                <label for="flag">Flag</label>
+                <input type="text" class="form-control" name="flag" id="flag" placeholder="HarekazeCTF{...}">
             </div>
             {{ if .Message }}
                 <div class="alert alert-{{.MessageType}}" role="alert">{{.Message}}</div>

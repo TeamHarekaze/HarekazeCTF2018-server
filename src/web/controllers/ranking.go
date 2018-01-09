@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"../../redisClient/RankingCache"
 	"./BaseController"
 
-	"../models/AnswerModel"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 )
@@ -15,8 +15,8 @@ type RankingController struct {
 // Get handles GET: http://localhost:8080/ranking.
 func (c *RankingController) Get() mvc.Result {
 
-	answerModel := AnswerModel.New()
-	ranks, err := answerModel.Ranking()
+	rankingCache := RankingCache.New()
+	ranks, err := rankingCache.Rank()
 	if err != nil {
 		return mvc.Response{Err: err}
 	}

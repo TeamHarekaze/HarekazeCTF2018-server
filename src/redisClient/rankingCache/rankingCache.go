@@ -17,7 +17,7 @@ type Rank struct {
 	Rank       int
 	Name       string
 	Score      int
-	UpdateTime time.Time
+	UpdateTime int
 }
 
 // 構造体のスライス
@@ -32,7 +32,11 @@ func (r R) Swap(i int, j int) {
 }
 
 func (r R) Less(i, j int) bool {
-	return r[i].Score < r[j].Score
+	if r[i].Score != r[j].Score {
+		return r[i].Score < r[j].Score
+	} else {
+		return r[i].UpdateTime > r[j].UpdateTime
+	}
 }
 
 type Cache struct {
@@ -76,9 +80,12 @@ func (c *Cache) setData() error {
 		r := rank[i]
 		name := r.Name
 		score := r.Score
-		// aliveTime := time.Duration(1600000000 - r.UpdateTime.Unix())
-		aliveTime := time.Duration(0)
-		err := c.client.Set(name, score, aliveTime).Err()
+		updateTime := r.UpdateTime.Unix()
+		err := c.client.HSet(name, "score", score).Err()
+		if err != nil {
+			return err
+		}
+		err = c.client.HSet(name, "update_time", updateTime).Err()
 		if err != nil {
 			return err
 		}
@@ -115,18 +122,26 @@ func (c *Cache) Set(teamName string, questionID int) error {
 		return err
 	}
 
-	val, err := c.client.Get(teamName).Result()
+	val, err := c.client.HGet(teamName, "score").Result()
 	if err != nil && err != redis.Nil {
 		return err
 	}
 	if err == redis.Nil {
-		err := c.client.Set(teamName, score+bonus, 0).Err()
+		err := c.client.HSet(teamName, "score", score+bonus).Err()
+		if err != nil {
+			return err
+		}
+		err = c.client.HSet(teamName, "update_time", time.Now().Unix()).Err()
 		if err != nil {
 			return err
 		}
 	} else {
 		old_score, _ := strconv.Atoi(val)
-		err := c.client.Set(teamName, old_score+score+bonus, 0).Err()
+		err := c.client.HSet(teamName, "score", old_score+score+bonus).Err()
+		if err != nil {
+			return err
+		}
+		err = c.client.HSet(teamName, "update_time", time.Now().Unix()).Err()
 		if err != nil {
 			return err
 		}
@@ -155,15 +170,23 @@ func (c *Cache) Rank() (R, error) {
 		if err != nil {
 			return rank, err
 		}
+		fmt.Println(keys)
 		for _, key := range keys {
-			val, err := c.client.Get(key).Result()
+			var r Rank
+			val, err := c.client.HGet(key, "score").Result()
 			if err != nil {
 				return rank, err
 			}
-			var r Rank
 			intVal, _ := strconv.Atoi(val)
 			r.Name = key
 			r.Score = intVal
+
+			val, err = c.client.HGet(key, "update_time").Result()
+			if err != nil {
+				return rank, err
+			}
+			intVal, _ = strconv.Atoi(val)
+			r.UpdateTime = intVal
 			rank = append(rank, r)
 		}
 		if cursor == 0 {
@@ -172,6 +195,7 @@ func (c *Cache) Rank() (R, error) {
 	}
 	// sort
 	sort.Sort(sort.Reverse(rank))
+	// add Rank
 	for i := 0; i < len(rank); i = i + 1 {
 		rank[i].Rank = i + 1
 	}

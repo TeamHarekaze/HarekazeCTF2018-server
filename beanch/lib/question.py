@@ -20,6 +20,7 @@ class question:
 
     # add : 問題を追加する
     def add(self, session, data={}):
+        print('question.add(data={})'.format(data))
         # get token
         response = session.get( self.target_admin_url + '/question/add' )
         if response.status_code != 200:
@@ -43,6 +44,7 @@ class question:
 
     # submit : 問題に回答する 戻り値:正解(True),不正解(False)
     def submit(self, session, q_id=1, flag=''):
+        print('question.submit(session={}, q_id={}, flag={})'.format(session, q_id, flag))
         # get token
         response = session.get( self.target_url + '/answer/' + str(q_id) )
         if response.status_code != 200:
@@ -65,6 +67,7 @@ class question:
 
     # list : 問題一覧を習得する 戻り値:id list
     def list(self):
+        print('question.list()')
         q_id_list = []
         session = requests.Session()
         

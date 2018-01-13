@@ -159,20 +159,20 @@ func (c *Cache) Rank() (R, error) {
 		fmt.Println(err)
 	}
 	IncrByXX := redis.NewScript(string(data))
-	n, err := IncrByXX.Run(c.client, []string{}).Result()
+	dataArrayInterface, err := IncrByXX.Run(c.client, []string{}).Result()
 	if err != nil {
 		return rank, err
 	}
 
-	re := reflect.ValueOf(n)
-	for i := 0; i < re.Len(); i = i + 1 {
+	dataArrayValue := reflect.ValueOf(dataArrayInterface)
+	for i := 0; i < dataArrayValue.Len(); i = i + 1 {
 		var r Rank
-		rei := re.Index(i).Interface()
-		re2 := reflect.ValueOf(rei)
-		r.Name = re2.Index(0).Interface().(string)
-		scoreStr := re2.Index(1).Interface().(string)
+		dataInterface := dataArrayValue.Index(i).Interface()
+		dataValue := reflect.ValueOf(dataInterface)
+		r.Name = dataValue.Index(0).Interface().(string)
+		scoreStr := dataValue.Index(1).Interface().(string)
 		r.Score, _ = strconv.Atoi(scoreStr)
-		updateTimeStr := re2.Index(2).Interface().(string)
+		updateTimeStr := dataValue.Index(2).Interface().(string)
 		r.UpdateTime, _ = strconv.Atoi(updateTimeStr)
 		rank = append(rank, r)
 	}

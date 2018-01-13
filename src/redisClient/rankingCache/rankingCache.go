@@ -2,7 +2,9 @@ package RankingCache
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"reflect"
 	"sort"
 	"strconv"
 	"time"
@@ -152,37 +154,29 @@ func (c *Cache) Rank() (R, error) {
 		}
 	}
 	// get data
-	var cursor uint64
-	for {
-		var keys []string
-		var err error
-		keys, cursor, err = c.client.Scan(cursor, "", 10).Result()
-		if err != nil {
-			return rank, err
-		}
-		fmt.Println(keys)
-		for _, key := range keys {
-			var r Rank
-			val, err := c.client.HGet(key, "score").Result()
-			if err != nil {
-				return rank, err
-			}
-			intVal, _ := strconv.Atoi(val)
-			r.Name = key
-			r.Score = intVal
-
-			val, err = c.client.HGet(key, "update_time").Result()
-			if err != nil {
-				return rank, err
-			}
-			intVal, _ = strconv.Atoi(val)
-			r.UpdateTime = intVal
-			rank = append(rank, r)
-		}
-		if cursor == 0 {
-			break
-		}
+	data, err := ioutil.ReadFile(`./getAllData.lua`)
+	if err != nil {
+		fmt.Println(err)
 	}
+	IncrByXX := redis.NewScript(string(data))
+	n, err := IncrByXX.Run(c.client, []string{}).Result()
+	if err != nil {
+		return rank, err
+	}
+
+	re := reflect.ValueOf(n)
+	for i := 0; i < re.Len(); i = i + 1 {
+		var r Rank
+		rei := re.Index(i).Interface()
+		re2 := reflect.ValueOf(rei)
+		r.Name = re2.Index(0).Interface().(string)
+		scoreStr := re2.Index(1).Interface().(string)
+		r.Score, _ = strconv.Atoi(scoreStr)
+		updateTimeStr := re2.Index(2).Interface().(string)
+		r.UpdateTime, _ = strconv.Atoi(updateTimeStr)
+		rank = append(rank, r)
+	}
+
 	// sort
 	sort.Sort(sort.Reverse(rank))
 	// add Rank

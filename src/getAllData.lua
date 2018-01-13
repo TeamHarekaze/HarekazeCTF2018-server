@@ -1,13 +1,4 @@
--- local function array_add(m_arr, add_arr)
---     for i = 1, #add_arr then
---         m_arr[ #m_arr + 1] = add_arr[i]
---     end
---     return m_arr
--- end
-
 local result = {}
-
-
 local cursor = 0
 local count = 0
 while true do

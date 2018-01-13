@@ -54,21 +54,11 @@ func New() *Cache {
 }
 
 func (c *Cache) isNoSet() (bool, error) {
-	var cursor uint64
-	var n int
-	for {
-		var keys []string
-		var err error
-		keys, cursor, err = c.client.Scan(cursor, "", 10).Result()
-		if err != nil {
-			return false, err
-		}
-		n += len(keys)
-		if cursor == 0 {
-			break
-		}
+	keys, _, err := c.client.Scan(0, "", 2).Result()
+	if err != nil {
+		return false, err
 	}
-	return n == 0, nil
+	return len(keys) == 0, nil
 }
 func (c *Cache) setData() error {
 	answerModel := AnswerModel.New()

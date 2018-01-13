@@ -2,7 +2,9 @@ package RankingCache
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"reflect"
 	"sort"
 	"strconv"
 	"time"
@@ -54,21 +56,11 @@ func New() *Cache {
 }
 
 func (c *Cache) isNoSet() (bool, error) {
-	var cursor uint64
-	var n int
-	for {
-		var keys []string
-		var err error
-		keys, cursor, err = c.client.Scan(cursor, "", 10).Result()
-		if err != nil {
-			return false, err
-		}
-		n += len(keys)
-		if cursor == 0 {
-			break
-		}
+	keys, _, err := c.client.Scan(0, "", 2).Result()
+	if err != nil {
+		return false, err
 	}
-	return n == 0, nil
+	return len(keys) == 0, nil
 }
 func (c *Cache) setData() error {
 	answerModel := AnswerModel.New()
@@ -162,37 +154,29 @@ func (c *Cache) Rank() (R, error) {
 		}
 	}
 	// get data
-	var cursor uint64
-	for {
-		var keys []string
-		var err error
-		keys, cursor, err = c.client.Scan(cursor, "", 10).Result()
-		if err != nil {
-			return rank, err
-		}
-		fmt.Println(keys)
-		for _, key := range keys {
-			var r Rank
-			val, err := c.client.HGet(key, "score").Result()
-			if err != nil {
-				return rank, err
-			}
-			intVal, _ := strconv.Atoi(val)
-			r.Name = key
-			r.Score = intVal
-
-			val, err = c.client.HGet(key, "update_time").Result()
-			if err != nil {
-				return rank, err
-			}
-			intVal, _ = strconv.Atoi(val)
-			r.UpdateTime = intVal
-			rank = append(rank, r)
-		}
-		if cursor == 0 {
-			break
-		}
+	data, err := ioutil.ReadFile(`./getAllData.lua`)
+	if err != nil {
+		fmt.Println(err)
 	}
+	IncrByXX := redis.NewScript(string(data))
+	dataArrayInterface, err := IncrByXX.Run(c.client, []string{}).Result()
+	if err != nil {
+		return rank, err
+	}
+
+	dataArrayValue := reflect.ValueOf(dataArrayInterface)
+	for i := 0; i < dataArrayValue.Len(); i = i + 1 {
+		var r Rank
+		dataInterface := dataArrayValue.Index(i).Interface()
+		dataValue := reflect.ValueOf(dataInterface)
+		r.Name = dataValue.Index(0).Interface().(string)
+		scoreStr := dataValue.Index(1).Interface().(string)
+		r.Score, _ = strconv.Atoi(scoreStr)
+		updateTimeStr := dataValue.Index(2).Interface().(string)
+		r.UpdateTime, _ = strconv.Atoi(updateTimeStr)
+		rank = append(rank, r)
+	}
+
 	// sort
 	sort.Sort(sort.Reverse(rank))
 	// add Rank

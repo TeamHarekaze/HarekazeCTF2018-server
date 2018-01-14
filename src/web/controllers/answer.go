@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 
 	"./BaseController"
 
@@ -26,6 +27,7 @@ func (c *AnswerController) answerViewTemplete(data context.Map) mvc.View {
 // GetBy handles GET: http://localhost:8080/answer/<quesion id>.
 func (c *AnswerController) GetBy(questionId int) mvc.Result {
 	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/answer/%d", questionId))
 		return mvc.Response{Path: "/user/login"}
 	} else if c.IsBeforeCompetition() {
 		return mvc.Response{Code: 404}
@@ -76,6 +78,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 // PostBy handles GET: http://localhost:8080/answer/<quesion id>.
 func (c *AnswerController) PostBy(questionId int) mvc.Result {
 	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/answer/%d", questionId))
 		return mvc.Response{Path: "/user/login"}
 	} else if c.IsBeforeCompetition() {
 		return mvc.Response{Code: 404}

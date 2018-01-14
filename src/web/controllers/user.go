@@ -140,7 +140,7 @@ func (c *UserController) PostRegister() mvc.Result {
 		// if not nil then this error will be shown instead.
 		Err: err,
 		// redirect to /user/me.
-		Path: "/user/me",
+		Path: c.GetRedirectPath(),
 		// When redirecting from POST to GET request you -should- use this HTTP status code,
 		// however there're some (complicated) alternatives if you
 		// search online or even the HTTP RFC.
@@ -198,7 +198,7 @@ func (c *UserController) PostLogin() mvc.Result {
 	}
 
 	return mvc.Response{
-		Path: "/user/me",
+		Path: c.GetRedirectPath(),
 	}
 }
 

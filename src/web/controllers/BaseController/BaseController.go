@@ -83,6 +83,20 @@ func (c *Base) CheckTaken(taken string) bool {
 	return r
 }
 
+// SetRedirectPath is set redirect_path
+func (c *Base) SetRedirectPath(path string) {
+	c.Session.Set("redirect_path", path)
+}
+
+// GetRedirectPath is get redirect_path
+func (c *Base) GetRedirectPath() string {
+	path := c.Session.GetString("redirect_path")
+	if path == "" {
+		return "/"
+	}
+	return path
+}
+
 func (c *Base) IsNowCompetition() bool {
 	nowTime := time.Now().Unix()
 	startTime, _ := time.Parse("2006-01-02 15:04:05" /*layout*/, os.Getenv("COMPETITION_START_TIME"))

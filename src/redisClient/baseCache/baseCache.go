@@ -27,3 +27,6 @@ func (c *Base) IsNoSet() (bool, error) {
 	}
 	return len(keys) == 0, nil
 }
+func (c *Base) Close() {
+	c.Client.Close()
+}

@@ -16,6 +16,7 @@ type RankingController struct {
 func (c *RankingController) Get() mvc.Result {
 
 	rankingCache := RankingCache.New()
+	defer rankingCache.Close()
 	ranks, err := rankingCache.Rank()
 	if err != nil {
 		return mvc.Response{Err: err}

@@ -3,7 +3,7 @@ package controllers
 import (
 	"./BaseController"
 
-	"../models/QuestionModel"
+	"../../redisClient/solveCache"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 )
@@ -23,8 +23,12 @@ func (c *QuestionController) Get() mvc.Result {
 		}
 	}
 
-	questionModel := QuestionModel.New()
-	questions, err := questionModel.List(c.GetLoggedTeamName())
+	solveCache := SolveCache.New()
+	defer solveCache.Close()
+	questions, err := solveCache.List(c.GetLoggedTeamName())
+
+	// questionModel := QuestionModel.New()
+	// questions, err := questionModel.List(c.GetLoggedTeamName())
 	if err != nil {
 		return mvc.Response{Err: err}
 	}

@@ -15,6 +15,11 @@ const (
 	primarykey = "id"
 )
 
+type Solve struct {
+	QuestionName string
+	Team         string
+}
+
 type Rank struct {
 	Rank       int
 	Name       string
@@ -140,4 +145,29 @@ func (m *AnswerModel) IsFast(questionID int) (bool, error) {
 		return false, errors.New("Database error")
 	}
 	return count == 1, nil
+}
+
+func (m *AnswerModel) GetSolve() ([]Solve, error) {
+	m.Open()
+	defer m.Close()
+
+	var solves []Solve
+	query := fmt.Sprintf(`
+		SELECT question.name, team.name FROM answer
+		INNER JOIN question ON question.id = answer.question_id AND question.flag = answer.flag
+		LEFT JOIN user ON user.id = answer.user_id
+		LEFT JOIN team ON team.id = user.team_id
+	`)
+	rows, err := m.Connection.Query(query)
+	if err != nil {
+		return solves, err
+	}
+	for rows.Next() {
+		var s Solve
+		if rows.Scan(&s.QuestionName, &s.Team) != nil {
+			return solves, err
+		}
+		solves = append(solves, s)
+	}
+	return solves, nil
 }

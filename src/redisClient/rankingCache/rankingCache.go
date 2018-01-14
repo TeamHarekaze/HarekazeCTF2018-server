@@ -143,7 +143,7 @@ func (c *Cache) Rank() (R, error) {
 		}
 	}
 	// get data
-	data, err := ioutil.ReadFile(`./getAllData.lua`)
+	data, err := ioutil.ReadFile(`./getRankingCacheAllData.lua`)
 	if err != nil {
 		fmt.Println(err)
 	}

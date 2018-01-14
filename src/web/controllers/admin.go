@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"os"
 
 	"./BaseController"
@@ -15,6 +16,10 @@ type Admin struct {
 
 // Get handles GET: http://localhost:8080/<APP_ADMIN_HASH>.
 func (c *Admin) Get() mvc.Result {
+	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/%s", os.Getenv("APP_ADMIN_HASH")))
+		return mvc.Response{Path: "/user/login"}
+	}
 	return mvc.View{
 		Name: "admin/index.html",
 		Data: context.Map{

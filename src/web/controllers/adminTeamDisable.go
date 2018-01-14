@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"os"
 
 	"../models/TeamModel"
@@ -15,6 +16,11 @@ type AdminTeamDisable struct {
 
 // AnyBy handles GET: http://localhost:8080/<APP_ADMIN_HASH>/team/disable/<team id>.
 func (c *AdminTeamDisable) AnyBy(teamId int) mvc.Result {
+	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/%s/team/disable/%d", os.Getenv("APP_ADMIN_HASH"), teamId))
+		return mvc.Response{Path: "/user/login"}
+	}
+
 	teamModel := TeamModel.New()
 	err := teamModel.Disable(teamId)
 	if err != nil {

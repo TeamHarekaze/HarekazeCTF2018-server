@@ -10,6 +10,8 @@ import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
 	"github.com/kataras/iris/sessions"
+	"github.com/kataras/iris/sessions/sessiondb/redis"
+	"github.com/kataras/iris/sessions/sessiondb/redis/service"
 
 	"./md2html"
 	"./web/controllers"
@@ -30,11 +32,29 @@ func main() {
 	view.Layout("layouts/layout.html")
 	view.AddFunc("md2html", md2html.Md2Html)
 	app.RegisterView(view)
+
+	// make session DB
+	sesstionDB := redis.New(service.Config{
+		Network:     "tcp",
+		Addr:        fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT")),
+		Password:    os.Getenv("REDIS_PASSWORD"),
+		Database:    "1",
+		MaxIdle:     0,
+		MaxActive:   0,
+		IdleTimeout: service.DefaultRedisIdleTimeout,
+	})
+	iris.RegisterOnInterrupt(func() {
+		sesstionDB.Close()
+	})
+
 	// make session manager
 	sessionManager := sessions.New(sessions.Config{
 		Cookie:  "HarekazeCTF-session",
 		Expires: 30 * time.Minute,
 	})
+
+	// use redis db
+	sessionManager.UseDatabase(sesstionDB)
 
 	//route
 	mvc.New(app.Party("/")).Register(sessionManager.Start).Handle(&controllers.HomeController{})

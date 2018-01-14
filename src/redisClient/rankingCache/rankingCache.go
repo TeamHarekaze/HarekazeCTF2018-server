@@ -3,7 +3,6 @@ package RankingCache
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"reflect"
 	"sort"
 	"strconv"
@@ -11,6 +10,7 @@ import (
 
 	"../../web/models/AnswerModel"
 	"../../web/models/QuestionModel"
+	"../baseCache"
 	"github.com/go-redis/redis"
 )
 
@@ -42,26 +42,15 @@ func (r R) Less(i, j int) bool {
 }
 
 type Cache struct {
-	client *redis.Client
+	BaseCache.Base
 }
 
 func New() *Cache {
 	cache := new(Cache)
-	cache.client = redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT")),
-		Password: os.Getenv("REDIS_PASSWORD"),
-		DB:       0,
-	})
+	cache.Client = BaseCache.NewClient(0)
 	return cache
 }
 
-func (c *Cache) isNoSet() (bool, error) {
-	keys, _, err := c.client.Scan(0, "", 2).Result()
-	if err != nil {
-		return false, err
-	}
-	return len(keys) == 0, nil
-}
 func (c *Cache) setData() error {
 	answerModel := AnswerModel.New()
 	rank, err := answerModel.Ranking()
@@ -73,11 +62,11 @@ func (c *Cache) setData() error {
 		name := r.Name
 		score := r.Score
 		updateTime := r.UpdateTime.Unix()
-		err := c.client.HSet(name, "score", score).Err()
+		err := c.Client.HSet(name, "score", score).Err()
 		if err != nil {
 			return err
 		}
-		err = c.client.HSet(name, "update_time", updateTime).Err()
+		err = c.Client.HSet(name, "update_time", updateTime).Err()
 		if err != nil {
 			return err
 		}
@@ -86,7 +75,7 @@ func (c *Cache) setData() error {
 }
 
 func (c *Cache) Set(teamName string, questionID int) error {
-	r, err := c.isNoSet()
+	r, err := c.IsNoSet()
 	if err != nil {
 		return err
 	}
@@ -114,26 +103,26 @@ func (c *Cache) Set(teamName string, questionID int) error {
 		return err
 	}
 
-	val, err := c.client.HGet(teamName, "score").Result()
+	val, err := c.Client.HGet(teamName, "score").Result()
 	if err != nil && err != redis.Nil {
 		return err
 	}
 	if err == redis.Nil {
-		err := c.client.HSet(teamName, "score", score+bonus).Err()
+		err := c.Client.HSet(teamName, "score", score+bonus).Err()
 		if err != nil {
 			return err
 		}
-		err = c.client.HSet(teamName, "update_time", time.Now().Unix()).Err()
+		err = c.Client.HSet(teamName, "update_time", time.Now().Unix()).Err()
 		if err != nil {
 			return err
 		}
 	} else {
 		old_score, _ := strconv.Atoi(val)
-		err := c.client.HSet(teamName, "score", old_score+score+bonus).Err()
+		err := c.Client.HSet(teamName, "score", old_score+score+bonus).Err()
 		if err != nil {
 			return err
 		}
-		err = c.client.HSet(teamName, "update_time", time.Now().Unix()).Err()
+		err = c.Client.HSet(teamName, "update_time", time.Now().Unix()).Err()
 		if err != nil {
 			return err
 		}
@@ -143,7 +132,7 @@ func (c *Cache) Set(teamName string, questionID int) error {
 
 func (c *Cache) Rank() (R, error) {
 	var rank R
-	r, err := c.isNoSet()
+	r, err := c.IsNoSet()
 	if err != nil {
 		return rank, err
 	}
@@ -159,7 +148,7 @@ func (c *Cache) Rank() (R, error) {
 		fmt.Println(err)
 	}
 	IncrByXX := redis.NewScript(string(data))
-	dataArrayInterface, err := IncrByXX.Run(c.client, []string{}).Result()
+	dataArrayInterface, err := IncrByXX.Run(c.Client, []string{}).Result()
 	if err != nil {
 		return rank, err
 	}

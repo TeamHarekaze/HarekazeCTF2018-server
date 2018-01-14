@@ -65,6 +65,9 @@ func (c *UserController) PostRegister() mvc.Result {
 	} else if !regexp.MustCompile(`^[a-zA-Z0-9]+$`).MatchString(username) {
 		err := errors.New("User name is 'a-z A-Z 0-9' only")
 		return mvc.Response{Err: err}
+	} else if !regexp.MustCompile(`^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$`).MatchString(email) {
+		err := errors.New("The format of the email is incorrect.")
+		return mvc.Response{Err: err}
 	} else if password != password_confirmation {
 		err := errors.New("User passwords do not match")
 		return mvc.Response{Err: err}
@@ -178,6 +181,9 @@ func (c *UserController) PostLogin() mvc.Result {
 	if !c.CheckTaken(token) {
 		err := errors.New("token error!!")
 		return mvc.Response{Err: err, Code: 400}
+	} else if !regexp.MustCompile(`^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$`).MatchString(email) {
+		err := errors.New("The format of the email is incorrect.")
+		return mvc.Response{Err: err}
 	}
 
 	userModel := UserModel.New()

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"../models/TeamModel"
-	"./BaseController"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/TeamModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 )

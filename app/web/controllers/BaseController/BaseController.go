@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"../../models/UserModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/UserModel"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
 )

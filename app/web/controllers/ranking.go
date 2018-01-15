@@ -1,9 +1,8 @@
 package controllers
 
 import (
-	"../../redisClient/rankingCache"
-	"./BaseController"
-
+	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/redisClient/rankingCache"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 )

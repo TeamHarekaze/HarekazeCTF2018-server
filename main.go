@@ -13,8 +13,8 @@ import (
 	"github.com/kataras/iris/sessions/sessiondb/redis"
 	"github.com/kataras/iris/sessions/sessiondb/redis/service"
 
-	"./md2html"
-	"./web/controllers"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/md2html"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers"
 )
 
 func Env_load() {

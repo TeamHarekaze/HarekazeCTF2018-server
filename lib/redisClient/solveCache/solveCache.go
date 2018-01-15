@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"time"
 
-	"../../web/models/AnswerModel"
-	"../../web/models/QuestionModel"
-	"../baseCache"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/AnswerModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/QuestionModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/redisClient/baseCache"
 	"github.com/go-redis/redis"
 )
 

@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 
-	"../../redisClient/rankingCache"
-	"../../redisClient/solveCache"
-	"../models/AnswerModel"
-	"../models/QuestionModel"
-	"./BaseController"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/redisClient/rankingCache"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/redisClient/solveCache"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/AnswerModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/QuestionModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 )

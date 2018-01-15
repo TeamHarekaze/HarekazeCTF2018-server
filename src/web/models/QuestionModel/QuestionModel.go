@@ -36,6 +36,7 @@ func New() *QuestionModel {
 	base.Primarykey = primarykey
 	return base
 }
+
 func (m *QuestionModel) FindAll() ([]Question, error) {
 	m.Open()
 	defer m.Close()
@@ -57,6 +58,29 @@ func (m *QuestionModel) FindAll() ([]Question, error) {
 	}
 	return questions, nil
 }
+
+func (m *QuestionModel) FindAllEnable() ([]Question, error) {
+	m.Open()
+	defer m.Close()
+
+	var questions []Question
+
+	query := fmt.Sprintf("SELECT id, name, flag, score, sentence, genre, publish_start_time  FROM %s WHERE publish_start_time < NOW()", m.Table)
+	rows, err := m.Connection.Query(query)
+	if err != nil {
+		return nil, errors.New("Database query error")
+	}
+	for rows.Next() {
+		var question Question
+		if err := rows.Scan(&question.Id, &question.Name, &question.Flag, &question.Score,
+			&question.Sentence, &question.Genre, &question.PublishStartTime); err != nil {
+			return questions, err
+		}
+		questions = append(questions, question)
+	}
+	return questions, nil
+}
+
 func (m *QuestionModel) List(teamName string) ([]Question, error) {
 	m.Open()
 	defer m.Close()

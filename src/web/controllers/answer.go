@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 
-	"./BaseController"
-
 	"../../redisClient/rankingCache"
+	"../../redisClient/solveCache"
 	"../models/AnswerModel"
 	"../models/QuestionModel"
+	"./BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 )
@@ -124,7 +124,14 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		messageType = "danger"
 		if isCorrect {
 			rankingCache := RankingCache.New()
+			defer rankingCache.Close()
 			err := rankingCache.Set(c.GetLoggedTeamName(), questionId)
+			if err != nil {
+				return mvc.Response{Err: err}
+			}
+			solveCache := SolveCache.New()
+			defer solveCache.Close()
+			err = solveCache.Set(questionId, c.GetLoggedTeamName())
 			if err != nil {
 				return mvc.Response{Err: err}
 			}

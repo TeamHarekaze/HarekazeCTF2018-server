@@ -40,33 +40,30 @@ vim .env
 go run harekazectf.go
 ```
 
-# mysql, redisの簡単構築
-`Docker`でやるよ！
+## Docker Composeを利用する場合
+Docker Composeを利用すると手元の環境を汚さずにDockerで構成された開発環境を利用することが出来ます。
 
-1. 適当な作業ディレクトリを作成 & 移動
-```shell
-mkdir -p ~/docker/HarekazeCTF_DB
-cd ~/docker/HarekazeCTF_DB
-```
+```console
+% docker-compose build
+% cat src/.env
+APP_PORT=5000
+APP_ADMIN_HASH="bda130d51a9b2e2f7f7929831af92e43"
 
-2. コンテナ設定ファイルをダウンロード
-```shell
-git clone https://github.com/HayatoDoi/docker-mysql.git
-```
+# Competition Time
+COMPETITION_START_TIME="2018-02-10 15:00:00" #UTC +09:00
+COMPETITION_END_TIME="2018-02-11 15:00:00" #UTC +09:00
 
-3. 起動スクリプトを作成
-```shell
-vim start.sh
-```
+## MySQL
+DB_HOST="db"
+DB_NAME="HarekazeCTF"
+DB_PORT=3306
+DB_USER="root"
+DB_PASSWORD="password"
 
-  - ファイルの中身は次の通り
-```
-cd docker-mysql/
-docker-compose up -d
-docker run --rm --name redis -d -p 6379:6379 redis redis-server --appendonly yes
-```
-
-4. 起動
-```shell
-sh start.sh
+## Redis
+REDIS_HOST="redis"
+% docker-compose up -d
+% docker-compose run --rm app mysql -uroot -ppassword -hdb -e "CREATE DATABASE HarekazeCTF;"
+% docker-compose run --rm app mysql -uroot -ppassword -hdb HarekazeCTF < src/migrate.sql
+% docker-compose restart app
 ```

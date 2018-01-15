@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 
 class login_user:
     def __init__(self, config={},data={}):
+        print('login_user(config={}, data={})'.format(config, data))
         self.target_url = config.target['url']
 
         self.user_email = data['user_email']

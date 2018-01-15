@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"os"
 
 	"../models/TeamModel"
@@ -17,6 +18,11 @@ type AdminTeamList struct {
 // Get handles GET: http://localhost:8080/<APP_ADMIN_HASH>/team.
 // Display team list
 func (c *AdminTeamList) Get() mvc.Result {
+	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/%s/team", os.Getenv("APP_ADMIN_HASH")))
+		return mvc.Response{Path: "/user/login"}
+	}
+
 	teamModel := TeamModel.New()
 	teams, err := teamModel.All()
 	if err != nil {

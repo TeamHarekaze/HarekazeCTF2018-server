@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"regexp"
 
@@ -18,6 +19,11 @@ type AdminQuestionEdit struct {
 
 // GetBy handles GET: http://localhost:8080/<APP_ADMIN_HASH>/question/edit/<question id>.
 func (c *AdminQuestionEdit) GetBy(questionId int) mvc.Result {
+	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/%s/question/edit/%d", os.Getenv("APP_ADMIN_HASH"), questionId))
+		return mvc.Response{Path: "/user/login"}
+	}
+
 	questionModel := QuestionModel.New()
 	question, err := questionModel.FindId(questionId)
 	if err != nil {
@@ -36,6 +42,11 @@ func (c *AdminQuestionEdit) GetBy(questionId int) mvc.Result {
 
 // PostBy handles GET: http://localhost:8080/<APP_ADMIN_HASH>/question/edit/<question id>.
 func (c *AdminQuestionEdit) PostBy(questionId int) mvc.Result {
+	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/%s/question/edit/%d", os.Getenv("APP_ADMIN_HASH"), questionId))
+		return mvc.Response{Path: "/user/login"}
+	}
+
 	var (
 		name               = c.Ctx.FormValue("name")
 		flag               = c.Ctx.FormValue("flag")

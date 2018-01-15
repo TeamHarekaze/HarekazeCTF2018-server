@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"regexp"
 
@@ -18,6 +19,11 @@ type AdminQuestionAdd struct {
 
 // Get handles GET: http://localhost:8080/<APP_ADMIN_HASH>/question/add.
 func (c *AdminQuestionAdd) Get() mvc.Result {
+	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/%s/question/add", os.Getenv("APP_ADMIN_HASH")))
+		return mvc.Response{Path: "/user/login"}
+	}
+
 	return mvc.View{
 		Name: "admin/questionAddForm.html",
 		Data: context.Map{
@@ -30,6 +36,11 @@ func (c *AdminQuestionAdd) Get() mvc.Result {
 
 // Post handles POST: http://localhost:8080/<APP_ADMIN_HASH>/question/add.
 func (c *AdminQuestionAdd) Post() mvc.Result {
+	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/%s/question/add", os.Getenv("APP_ADMIN_HASH")))
+		return mvc.Response{Path: "/user/login"}
+	}
+
 	var (
 		name               = c.Ctx.FormValue("name")
 		flag               = c.Ctx.FormValue("flag")

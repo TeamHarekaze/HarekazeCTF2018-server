@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"os"
 
 	"../models/TeamModel"
@@ -15,6 +16,11 @@ type AdminTeamEnable struct {
 
 // GetBy handles GET: http://localhost:8080/<APP_ADMIN_HASH>/team/enable/<team id>.
 func (c *AdminTeamEnable) GetBy(teamId int) mvc.Result {
+	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/%s/team/enable/%d", os.Getenv("APP_ADMIN_HASH"), teamId))
+		return mvc.Response{Path: "/user/login"}
+	}
+
 	teamModel := TeamModel.New()
 	err := teamModel.Enable(teamId)
 	if err != nil {

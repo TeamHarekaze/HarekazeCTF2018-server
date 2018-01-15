@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"os"
 
 	"../models/QuestionModel"
@@ -15,6 +16,11 @@ type AdminQuestionDelete struct {
 
 // Any handles GET: http://localhost:8080/<APP_ADMIN_HASH>/question/delete/<question id>.
 func (c *AdminQuestionDelete) AnyBy(questionId int) mvc.Result {
+	if !c.IsLoggedIn() {
+		c.SetRedirectPath(fmt.Sprintf("/%s/question/delete/%d", os.Getenv("APP_ADMIN_HASH"), questionId))
+		return mvc.Response{Path: "/user/login"}
+	}
+
 	questionModel := QuestionModel.New()
 	err := questionModel.Delete(questionId)
 	if err != nil {

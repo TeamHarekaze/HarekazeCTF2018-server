@@ -27,8 +27,8 @@ func Env_load() {
 func main() {
 	Env_load()
 	app := iris.New()
-	app.StaticWeb("/asset", "./web/public") //debug only
-	view := iris.HTML("./web/views", ".html")
+	app.StaticWeb("/asset", "app/web/public") //debug only
+	view := iris.HTML("app/web/views", ".html")
 	view.Layout("layouts/layout.html")
 	view.AddFunc("md2html", md2html.Md2Html)
 	app.RegisterView(view)

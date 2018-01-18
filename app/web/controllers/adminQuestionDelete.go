@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/QuestionModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/QuestionModel"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
 	"github.com/kataras/iris/mvc"
 )

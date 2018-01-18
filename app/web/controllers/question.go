@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/redisClient/solveCache"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/SolveCache"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 )

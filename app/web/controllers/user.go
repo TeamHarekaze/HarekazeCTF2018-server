@@ -4,8 +4,8 @@ import (
 	"errors"
 	"regexp"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/TeamModel"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/UserModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/TeamModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/UserModel"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"

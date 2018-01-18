@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/AnswerModel"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/models/QuestionModel"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/redisClient/baseCache"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/AnswerModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/QuestionModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/BaseCache"
 	"github.com/go-redis/redis"
 )
 

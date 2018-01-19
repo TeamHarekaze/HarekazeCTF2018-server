@@ -35,7 +35,7 @@ func (c *AdminQuestionEdit) GetBy(questionId int) mvc.Result {
 			"Title":     "Question Edit",
 			"AdminHash": os.Getenv("APP_ADMIN_HASH"),
 			"Question":  question,
-			"Token":     c.MakeToken(),
+			"Token":     c.MakeToken(fmt.Sprintf("/%s/question/edit/%d", os.Getenv("APP_ADMIN_HASH"), questionId)),
 		},
 	}
 }
@@ -57,7 +57,7 @@ func (c *AdminQuestionEdit) PostBy(questionId int) mvc.Result {
 		sentence           = c.Ctx.FormValue("sentence")
 		token              = c.Ctx.FormValue("csrf_token")
 	)
-	if !c.CheckTaken(token) {
+	if !c.CheckTaken(token, fmt.Sprintf("/%s/question/edit/%d", os.Getenv("APP_ADMIN_HASH"), questionId)) {
 		err := errors.New("token error!!")
 		return mvc.Response{Err: err, Code: 400}
 	}

@@ -1,6 +1,7 @@
 package BaseController
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"time"
@@ -64,7 +65,7 @@ func (c *Base) Logout() {
 }
 
 // MakeToken is generate taken and set taken in session.
-func (c *Base) MakeToken() string {
+func (c *Base) MakeToken(path string) string {
 	var rs1Letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$%&")
 	rand.Seed(time.Now().UnixNano())
 	b := make([]rune, 64)
@@ -72,14 +73,16 @@ func (c *Base) MakeToken() string {
 		b[i] = rs1Letters[rand.Intn(len(rs1Letters))]
 	}
 	taken := string(b)
-	c.Session.Set("_csrfToken", taken)
+	c.Session.Set("taken_"+taken, path)
+	fmt.Println(c.Session.GetAll())
 	return taken
 }
 
 // CheckTaken is check taken
-func (c *Base) CheckTaken(taken string) bool {
-	r := c.Session.Get("_csrfToken") == taken
-	c.Session.Delete("_csrfToken")
+func (c *Base) CheckTaken(taken string, path string) bool {
+	r := c.Session.Get("taken_"+taken) == path
+	c.Session.Delete("taken_" + taken)
+	fmt.Println(c.Session.GetAll())
 	return r
 }
 

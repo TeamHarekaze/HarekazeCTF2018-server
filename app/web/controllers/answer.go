@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/RankingCache"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/SolveCache"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/AnswerModel"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/QuestionModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/RankingCache"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/SolveCache"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
@@ -42,7 +42,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 			"IsSubmitBlock": false,
 			"Message":       "The competition end.",
 			"MessageType":   "danger",
-			"Token":         c.MakeToken(),
+			"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 		})
 	}
 
@@ -71,7 +71,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 		"IsSubmitBlock": isCorrected,
 		"Message":       message,
 		"MessageType":   messageType,
-		"Token":         c.MakeToken(),
+		"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 	})
 }
 
@@ -93,14 +93,14 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 			"IsSubmitBlock": true,
 			"Message":       "The competition end.",
 			"MessageType":   "danger",
-			"Token":         c.MakeToken(),
+			"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 		})
 	}
 	var (
 		flag  = c.Ctx.FormValue("flag")
 		token = c.Ctx.FormValue("csrf_token")
 	)
-	if !c.CheckTaken(token) {
+	if !c.CheckTaken(token, fmt.Sprintf("/answer/%d", questionId)) {
 		return mvc.Response{Err: errors.New("token error"), Code: 400}
 	}
 
@@ -152,6 +152,6 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		"IsSubmitBlock": isCorrected,
 		"Message":       message,
 		"MessageType":   messageType,
-		"Token":         c.MakeToken(),
+		"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 	})
 }

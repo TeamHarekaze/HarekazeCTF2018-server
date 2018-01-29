@@ -3,33 +3,40 @@
         <h2 >{{.Title}}</h2>
     </header>
     <div class="container">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Points</th>
-                    <th>Genre</th>
-                    <th>Author</th>
-                    <th>Solves</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{range .Questions}}
-                    <tr>
-                        {{ if .IsSolve }}
-                            <td><i class="fa fa-star" aria-hidden="true"></i></td>
-                        {{else}}
-                            <td></td>
+        <div class="row">
+            <div class="col-md-9">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Points</th>
+                            <th>Genre</th>
+                            <th>Author</th>
+                            <th>Solves</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Questions}}
+                            <tr>
+                                {{ if .IsSolve }}
+                                    <td><i class="fa fa-star" aria-hidden="true"></i></td>
+                                {{else}}
+                                    <td></td>
+                                {{end}}
+                                <td><a href="/answer/{{.Id}}">{{.Name}}</a></td>
+                                <td>{{.Score}}</td>
+                                <td>{{.Genre}}</td>
+                                <td>{{.AutherName}}</td>
+                                <td>{{.SolvesCount}}</td>
+                            </tr>
                         {{end}}
-                        <td><a href="/answer/{{.Id}}">{{.Name}}</a></td>
-                        <td>{{.Score}}</td>
-                        <td>{{.Genre}}</td>
-                        <td>{{.AutherName}}</td>
-                        <td>{{.SolvesCount}}</td>
-                    </tr>
-                {{end}}
-            </tbody>
-        </table>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-3">
+                <a class="twitter-timeline" data-height="400" href="https://twitter.com/TeamHarekaze?ref_src=twsrc%5Etfw">Tweets by TeamHarekaze</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </div>
+        </div>
     </div>
 </section>

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/SolveCache"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 )
@@ -17,7 +17,8 @@ func (c *QuestionController) Get() mvc.Result {
 		return mvc.View{
 			Name: "question/questionNoList.html",
 			Data: context.Map{
-				"Title": "Question",
+				"Title":       "Question",
+				"currentPage": "questions",
 			},
 		}
 	}
@@ -35,8 +36,9 @@ func (c *QuestionController) Get() mvc.Result {
 	var homeView = mvc.View{
 		Name: "question/questionList.html",
 		Data: context.Map{
-			"Title":     "Question",
-			"Questions": questions,
+			"Title":       "Question",
+			"Questions":   questions,
+			"currentPage": "questions",
 		},
 	}
 	return homeView

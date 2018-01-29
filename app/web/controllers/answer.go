@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/RankingCache"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/SolveCache"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/AnswerModel"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/QuestionModel"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/RankingCache"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/SolveCache"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
@@ -43,6 +43,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 			"Message":       "The competition end.",
 			"MessageType":   "danger",
 			"Token":         c.MakeToken(),
+			"currentPage":   "questions",
 		})
 	}
 
@@ -72,6 +73,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 		"Message":       message,
 		"MessageType":   messageType,
 		"Token":         c.MakeToken(),
+		"currentPage":   "questions",
 	})
 }
 
@@ -94,6 +96,7 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 			"Message":       "The competition end.",
 			"MessageType":   "danger",
 			"Token":         c.MakeToken(),
+			"currentPage":   "questions",
 		})
 	}
 	var (
@@ -153,5 +156,6 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		"Message":       message,
 		"MessageType":   messageType,
 		"Token":         c.MakeToken(),
+		"currentPage":   "questions",
 	})
 }

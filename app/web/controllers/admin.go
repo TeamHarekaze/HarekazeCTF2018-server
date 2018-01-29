@@ -23,8 +23,9 @@ func (c *Admin) Get() mvc.Result {
 	return mvc.View{
 		Name: "admin/index.html",
 		Data: context.Map{
-			"Title":     "Admin Page",
-			"AdminHash": os.Getenv("APP_ADMIN_HASH"),
+			"Title":      "Admin Page",
+			"AdminHash":  os.Getenv("APP_ADMIN_HASH"),
+			"IsLoggedIn": c.IsLoggedIn(),
 		},
 	}
 }

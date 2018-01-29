@@ -26,6 +26,7 @@ func (c *RankingController) Get() mvc.Result {
 		Data: context.Map{
 			"Title":       "Ranking",
 			"Ranks":       ranks,
+			"IsLoggedIn":  c.IsLoggedIn(),
 			"CurrentPage": "ranking",
 		},
 	}

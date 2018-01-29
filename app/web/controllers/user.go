@@ -34,6 +34,7 @@ func (c *UserController) GetRegister() mvc.Result {
 		Data: context.Map{
 			"Title":       "User Registration",
 			"Token":       c.MakeToken("/user/register"),
+			"IsLoggedIn":  c.IsLoggedIn(),
 			"CurrentPage": "register",
 		},
 	}
@@ -167,6 +168,7 @@ func (c *UserController) GetLogin() mvc.Result {
 		Data: context.Map{
 			"Title":       "User Login",
 			"Token":       c.MakeToken("/user/login"),
+			"IsLoggedIn":  c.IsLoggedIn(),
 			"CurrentPage": "login",
 		},
 	}
@@ -220,10 +222,11 @@ func (c *UserController) GetMe() mvc.Result {
 	return mvc.View{
 		Name: "user/me.html",
 		Data: context.Map{
-			"UserName": c.GetLoggedUserName(),
-			"UserID":   c.GetLoggedUserID(),
-			"TeamName": c.GetLoggedTeamName(),
-			"TeamID":   c.GetLoggedTeamID(),
+			"UserName":   c.GetLoggedUserName(),
+			"UserID":     c.GetLoggedUserID(),
+			"TeamName":   c.GetLoggedTeamName(),
+			"TeamID":     c.GetLoggedTeamID(),
+			"IsLoggedIn": c.IsLoggedIn(),
 		},
 	}
 }

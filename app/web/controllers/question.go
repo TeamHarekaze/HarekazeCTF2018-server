@@ -18,6 +18,7 @@ func (c *QuestionController) Get() mvc.Result {
 			Name: "question/questionNoList.html",
 			Data: context.Map{
 				"Title":       "Question",
+				"IsLoggedIn":  c.IsLoggedIn(),
 				"CurrentPage": "questions",
 			},
 		}
@@ -38,6 +39,7 @@ func (c *QuestionController) Get() mvc.Result {
 		Data: context.Map{
 			"Title":       "Question",
 			"Questions":   questions,
+			"IsLoggedIn":  c.IsLoggedIn(),
 			"CurrentPage": "questions",
 		},
 	}

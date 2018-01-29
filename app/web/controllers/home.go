@@ -15,6 +15,7 @@ func (c *HomeController) Get() mvc.Result {
 		Data: map[string]interface{}{
 			"Title":       "Hello Page",
 			"MyMessage":   "Welcome to my awesome website",
+			"IsLoggedIn":  c.IsLoggedIn(),
 			"CurrentPage": "home",
 		},
 	}

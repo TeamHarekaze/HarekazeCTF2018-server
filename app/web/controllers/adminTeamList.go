@@ -31,9 +31,10 @@ func (c *AdminTeamList) Get() mvc.Result {
 	return mvc.View{
 		Name: "admin/teamList.html",
 		Data: context.Map{
-			"Title":     "Team List",
-			"Teams":     teams,
-			"AdminHash": os.Getenv("APP_ADMIN_HASH"),
+			"Title":      "Team List",
+			"Teams":      teams,
+			"AdminHash":  os.Getenv("APP_ADMIN_HASH"),
+			"IsLoggedIn": c.IsLoggedIn(),
 		},
 	}
 }

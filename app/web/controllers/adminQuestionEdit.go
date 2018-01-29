@@ -32,10 +32,11 @@ func (c *AdminQuestionEdit) GetBy(questionId int) mvc.Result {
 	return mvc.View{
 		Name: "admin/questionEditForm.html",
 		Data: context.Map{
-			"Title":     "Question Edit",
-			"AdminHash": os.Getenv("APP_ADMIN_HASH"),
-			"Question":  question,
-			"Token":     c.MakeToken(fmt.Sprintf("/%s/question/edit/%d", os.Getenv("APP_ADMIN_HASH"), questionId)),
+			"Title":      "Question Edit",
+			"AdminHash":  os.Getenv("APP_ADMIN_HASH"),
+			"Question":   question,
+			"Token":      c.MakeToken(fmt.Sprintf("/%s/question/edit/%d", os.Getenv("APP_ADMIN_HASH"), questionId)),
+			"IsLoggedIn": c.IsLoggedIn(),
 		},
 	}
 }

@@ -18,7 +18,7 @@ func (c *QuestionController) Get() mvc.Result {
 			Name: "question/questionNoList.html",
 			Data: context.Map{
 				"Title":       "Question",
-				"currentPage": "questions",
+				"CurrentPage": "questions",
 			},
 		}
 	}
@@ -38,7 +38,7 @@ func (c *QuestionController) Get() mvc.Result {
 		Data: context.Map{
 			"Title":       "Question",
 			"Questions":   questions,
-			"currentPage": "questions",
+			"CurrentPage": "questions",
 		},
 	}
 	return homeView

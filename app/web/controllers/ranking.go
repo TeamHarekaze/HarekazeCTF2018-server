@@ -26,7 +26,7 @@ func (c *RankingController) Get() mvc.Result {
 		Data: context.Map{
 			"Title":       "Ranking",
 			"Ranks":       ranks,
-			"currentPage": "ranking",
+			"CurrentPage": "ranking",
 		},
 	}
 	return homeView

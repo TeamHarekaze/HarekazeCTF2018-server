@@ -15,7 +15,7 @@ func (c *HomeController) Get() mvc.Result {
 		Data: map[string]interface{}{
 			"Title":       "Hello Page",
 			"MyMessage":   "Welcome to my awesome website",
-			"currentPage": "home",
+			"CurrentPage": "home",
 		},
 	}
 	return homeView

@@ -42,7 +42,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 			"IsSubmitBlock": false,
 			"Message":       "The competition end.",
 			"MessageType":   "danger",
-			"Token":         c.MakeToken(),
+			"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 			"currentPage":   "questions",
 		})
 	}
@@ -72,7 +72,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 		"IsSubmitBlock": isCorrected,
 		"Message":       message,
 		"MessageType":   messageType,
-		"Token":         c.MakeToken(),
+		"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 		"currentPage":   "questions",
 	})
 }
@@ -95,7 +95,7 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 			"IsSubmitBlock": true,
 			"Message":       "The competition end.",
 			"MessageType":   "danger",
-			"Token":         c.MakeToken(),
+			"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 			"currentPage":   "questions",
 		})
 	}
@@ -103,7 +103,7 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		flag  = c.Ctx.FormValue("flag")
 		token = c.Ctx.FormValue("csrf_token")
 	)
-	if !c.CheckTaken(token) {
+	if !c.CheckTaken(token, fmt.Sprintf("/answer/%d", questionId)) {
 		return mvc.Response{Err: errors.New("token error"), Code: 400}
 	}
 
@@ -155,7 +155,7 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		"IsSubmitBlock": isCorrected,
 		"Message":       message,
 		"MessageType":   messageType,
-		"Token":         c.MakeToken(),
+		"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 		"currentPage":   "questions",
 	})
 }

@@ -33,7 +33,7 @@ func (c *UserController) GetRegister() mvc.Result {
 		Name: "user/register.html",
 		Data: context.Map{
 			"Title":       "User Registration",
-			"Token":       c.MakeToken(),
+			"Token":       c.MakeToken("/user/register"),
 			"currentPage": "register",
 		},
 	}
@@ -56,7 +56,7 @@ func (c *UserController) PostRegister() mvc.Result {
 		token                           = c.Ctx.FormValue("csrf_token")
 	)
 
-	if !c.CheckTaken(token) {
+	if !c.CheckTaken(token, "/user/register") {
 		err := errors.New("token error!!")
 		return mvc.Response{Err: err, Code: 400}
 	}
@@ -166,7 +166,7 @@ func (c *UserController) GetLogin() mvc.Result {
 		Name: "user/login.html",
 		Data: context.Map{
 			"Title":       "User Login",
-			"Token":       c.MakeToken(),
+			"Token": c.MakeToken("/user/login"),
 			"currentPage": "login",
 		},
 	}
@@ -180,7 +180,7 @@ func (c *UserController) PostLogin() mvc.Result {
 		token    = c.Ctx.FormValue("csrf_token")
 	)
 
-	if !c.CheckTaken(token) {
+	if !c.CheckTaken(token, "/user/login") {
 		err := errors.New("token error!!")
 		return mvc.Response{Err: err, Code: 400}
 	} else if !regexp.MustCompile(`^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$`).MatchString(email) {

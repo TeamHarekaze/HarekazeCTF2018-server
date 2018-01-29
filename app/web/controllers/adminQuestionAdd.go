@@ -29,7 +29,7 @@ func (c *AdminQuestionAdd) Get() mvc.Result {
 		Data: context.Map{
 			"Title":     "Question Add",
 			"AdminHash": os.Getenv("APP_ADMIN_HASH"),
-			"Token":     c.MakeToken(),
+			"Token":     c.MakeToken(fmt.Sprintf("/%s/question/add", os.Getenv("APP_ADMIN_HASH"))),
 		},
 	}
 }
@@ -51,7 +51,7 @@ func (c *AdminQuestionAdd) Post() mvc.Result {
 		sentence           = c.Ctx.FormValue("sentence")
 		token              = c.Ctx.FormValue("csrf_token")
 	)
-	if !c.CheckTaken(token) {
+	if !c.CheckTaken(token, fmt.Sprintf("/%s/question/add", os.Getenv("APP_ADMIN_HASH"))) {
 		err := errors.New("token error!!")
 		return mvc.Response{Err: err, Code: 400}
 	}

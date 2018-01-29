@@ -32,9 +32,10 @@ func (c *AdminQuestionList) Get() mvc.Result {
 	return mvc.View{
 		Name: "admin/questionList.html",
 		Data: context.Map{
-			"Title":     "Question List",
-			"Questions": questions,
-			"AdminHash": os.Getenv("APP_ADMIN_HASH"),
+			"Title":      "Question List",
+			"Questions":  questions,
+			"AdminHash":  os.Getenv("APP_ADMIN_HASH"),
+			"IsLoggedIn": c.IsLoggedIn(),
 		},
 	}
 }

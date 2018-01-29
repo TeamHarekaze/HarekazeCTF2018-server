@@ -27,9 +27,10 @@ func (c *AdminQuestionAdd) Get() mvc.Result {
 	return mvc.View{
 		Name: "admin/questionAddForm.html",
 		Data: context.Map{
-			"Title":     "Question Add",
-			"AdminHash": os.Getenv("APP_ADMIN_HASH"),
-			"Token":     c.MakeToken(fmt.Sprintf("/%s/question/add", os.Getenv("APP_ADMIN_HASH"))),
+			"Title":      "Question Add",
+			"AdminHash":  os.Getenv("APP_ADMIN_HASH"),
+			"Token":      c.MakeToken(fmt.Sprintf("/%s/question/add", os.Getenv("APP_ADMIN_HASH"))),
+			"IsLoggedIn": c.IsLoggedIn(),
 		},
 	}
 }

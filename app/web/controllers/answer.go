@@ -44,6 +44,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 			"MessageType":   "danger",
 			"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 			"IsLoggedIn":    c.IsLoggedIn(),
+			"CurrentPage":   "questions",
 		})
 	}
 
@@ -74,6 +75,7 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 		"MessageType":   messageType,
 		"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 		"IsLoggedIn":    c.IsLoggedIn(),
+		"CurrentPage":   "questions",
 	})
 }
 
@@ -97,6 +99,7 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 			"MessageType":   "danger",
 			"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 			"IsLoggedIn":    c.IsLoggedIn(),
+			"CurrentPage":   "questions",
 		})
 	}
 	var (
@@ -157,5 +160,6 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		"MessageType":   messageType,
 		"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
 		"IsLoggedIn":    c.IsLoggedIn(),
+		"CurrentPage":   "questions",
 	})
 }

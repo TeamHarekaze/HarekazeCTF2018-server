@@ -13,9 +13,10 @@ func (c *HomeController) Get() mvc.Result {
 	var homeView = mvc.View{
 		Name: "home/home.html",
 		Data: map[string]interface{}{
-			"Title":      "Hello Page",
-			"MyMessage":  "Welcome to my awesome website",
-			"IsLoggedIn": c.IsLoggedIn(),
+			"Title":       "Hello Page",
+			"MyMessage":   "Welcome to my awesome website",
+			"IsLoggedIn":  c.IsLoggedIn(),
+			"CurrentPage": "home",
 		},
 	}
 	return homeView

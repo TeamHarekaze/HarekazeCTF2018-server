@@ -24,9 +24,10 @@ func (c *RankingController) Get() mvc.Result {
 	var homeView = mvc.View{
 		Name: "ranking/index.html",
 		Data: context.Map{
-			"Title":      "Ranking",
-			"Ranks":      ranks,
-			"IsLoggedIn": c.IsLoggedIn(),
+			"Title":       "Ranking",
+			"Ranks":       ranks,
+			"IsLoggedIn":  c.IsLoggedIn(),
+			"CurrentPage": "ranking",
 		},
 	}
 	return homeView

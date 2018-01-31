@@ -65,7 +65,12 @@ func (m *QuestionModel) FindAllEnable() ([]Question, error) {
 
 	var questions []Question
 
-	query := fmt.Sprintf("SELECT id, name, flag, score, sentence, genre, publish_start_time  FROM %s WHERE publish_start_time < NOW()", m.Table)
+	query := fmt.Sprintf(`
+		SELECT question.id, question.name, question.flag, question.score, question.sentence, question.genre, user.name, question.publish_start_time
+		FROM %s
+		INNER JOIN user ON user.id = question.author_id
+		WHERE publish_start_time < NOW()
+	`, m.Table)
 	rows, err := m.Connection.Query(query)
 	if err != nil {
 		return nil, errors.New("Database query error")
@@ -73,7 +78,7 @@ func (m *QuestionModel) FindAllEnable() ([]Question, error) {
 	for rows.Next() {
 		var question Question
 		if err := rows.Scan(&question.Id, &question.Name, &question.Flag, &question.Score,
-			&question.Sentence, &question.Genre, &question.PublishStartTime); err != nil {
+			&question.Sentence, &question.Genre, &question.AutherName, &question.PublishStartTime); err != nil {
 			return questions, err
 		}
 		questions = append(questions, question)

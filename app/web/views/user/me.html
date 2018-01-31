@@ -1,5 +1,45 @@
-<!-- debug only -->
-UserName : {{ .UserName }}<br>
-UserID : {{ .UserID }}<br>
-TeamName : {{ .TeamName }}<br>
-TeamID : {{ .TeamID }}<br>
+<section>
+    <header class="section-header">
+        <h2>My Profile</h2>
+    </header>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Team</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ .UserName }}</td>
+                    <td>{{ .TeamName }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section>
+    <header class="section-header">
+        <h2>Team Member</h2>
+    </header>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    {{range .Member}}
+                        <tr>
+                            <td>{{.}}</td>
+                        </tr>
+                    {{end}}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

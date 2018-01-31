@@ -148,6 +148,27 @@ func (m *TeamModel) Add(name string, password string) error {
 	return nil
 }
 
+func (m *TeamModel) GetMember(teamID string) ([]string, error) {
+	m.Open()
+	defer m.Close()
+
+	var member []string
+
+	query := fmt.Sprintf("SELECT name FROM user WHERE team_id = ?")
+	rows, err := m.Connection.Query(query, teamID)
+	if err != nil {
+		return member, err
+	}
+	for rows.Next() {
+		var m string
+		if err := rows.Scan(&m); err != nil {
+			return member, err
+		}
+		member = append(member, m)
+	}
+	return member, nil
+}
+
 // func (m *TeamModel) FindMember(id int) ([]string, error) {
 // 	m.Open()
 // 	defer m.Close()

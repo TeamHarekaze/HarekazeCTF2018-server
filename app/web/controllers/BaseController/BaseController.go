@@ -1,7 +1,6 @@
 package BaseController
 
 import (
-	"fmt"
 	"math/rand"
 	"os"
 	"time"
@@ -74,7 +73,6 @@ func (c *Base) MakeToken(path string) string {
 	}
 	taken := string(b)
 	c.Session.Set("taken_"+taken, path)
-	fmt.Println(c.Session.GetAll())
 	return taken
 }
 
@@ -82,7 +80,6 @@ func (c *Base) MakeToken(path string) string {
 func (c *Base) CheckTaken(taken string, path string) bool {
 	r := c.Session.Get("taken_"+taken) == path
 	c.Session.Delete("taken_" + taken)
-	fmt.Println(c.Session.GetAll())
 	return r
 }
 

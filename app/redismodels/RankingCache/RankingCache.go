@@ -1,7 +1,6 @@
 package RankingCache
 
 import (
-	"fmt"
 	"io/ioutil"
 	"reflect"
 	"sort"
@@ -145,7 +144,7 @@ func (c *Cache) Rank() (R, error) {
 	// get data
 	data, err := ioutil.ReadFile(`./getRankingCacheAllData.lua`)
 	if err != nil {
-		fmt.Println(err)
+		return rank, err
 	}
 	IncrByXX := redis.NewScript(string(data))
 	dataArrayInterface, err := IncrByXX.Run(c.Client, []string{}).Result()

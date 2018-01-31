@@ -90,30 +90,6 @@ func (m *AnswerModel) Ranking() ([]Rank, error) {
 	defer m.Close()
 
 	var rs []Rank
-	// query := fmt.Sprintf(`
-	// 	SELECT team_name,
-	// 			SUM(CASE WHEN score_table.create_time = (SELECT MIN(answer.create_time) FROM answer
-	// 					INNER JOIN question
-	// 					ON question.id = answer.question_id AND question.flag = answer.flag
-	// 					WHERE question.id = score_table.question_id )
-	// 			THEN score+10
-	// 			ELSE score
-	// 			END ) AS score_sum,
-	// 			MAX(create_time) AS update_time
-	// 		FROM (
-	// 			SELECT team.name AS team_name, question.id AS question_id, IFNULL(question.score, 0) AS score, MIN(answer.create_time) AS create_time
-	// 				FROM team
-	// 				RIGHT JOIN user
-	// 					ON user.team_id = team.id
-	// 				RIGHT JOIN answer
-	// 					ON answer.user_id = user.id
-	// 				INNER JOIN question
-	// 					ON question.id = answer.question_id AND question.flag = answer.flag
-	// 				GROUP BY team.name, question.id
-	// 			) score_table
-	// 		GROUP BY score_table.team_name
-	// 		ORDER BY score_sum DESC, MAX(create_time)
-	// `)
 	query := fmt.Sprintf(`
 		SELECT team_name, SUM(score) AS score_sum, MAX(create_time) AS update_time
 		FROM (

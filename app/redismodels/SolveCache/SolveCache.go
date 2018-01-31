@@ -1,10 +1,8 @@
 package SolveCache
 
 import (
-	"fmt"
 	"io/ioutil"
 	"reflect"
-	"time"
 
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/AnswerModel"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/QuestionModel"
@@ -33,11 +31,8 @@ func New() *Cache {
 
 func (c *Cache) setData() error {
 
-	startTime := time.Now().UnixNano()
-	fmt.Println("db connect...")
 	answerModel := AnswerModel.New()
 	solves, err := answerModel.GetSolve()
-	fmt.Printf("db close :%d\n", time.Now().UnixNano()-startTime)
 	if err != nil {
 		return err
 	}

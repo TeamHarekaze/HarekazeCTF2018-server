@@ -164,13 +164,11 @@ func (m *QuestionModel) Save(args map[string]string) error {
 	if args["publish_now"] == "on" {
 		_, err := m.Connection.Exec(query, args["name"], args["flag"], args["genre"], args["score"], args["sentence"], args["auther_id"])
 		if err != nil {
-			fmt.Println(err)
 			return errors.New("Database error")
 		}
 	} else {
 		_, err := m.Connection.Exec(query, args["name"], args["flag"], args["genre"], args["score"], args["publish_start_time"], args["sentence"], args["auther_id"])
 		if err != nil {
-			fmt.Println(err)
 			return errors.New("Database error")
 		}
 	}
@@ -193,12 +191,10 @@ func (m *QuestionModel) Update(questionId int, args map[string]string) error {
 	}
 	if args["publish_now"] == "on" {
 		if stmtOut.QueryRow(args["name"], args["flag"], args["score"], args["genre"], args["sentence"], questionId) == nil {
-			fmt.Println(err)
 			return errors.New("Database error")
 		}
 	} else {
 		if stmtOut.QueryRow(args["name"], args["flag"], args["score"], args["genre"], args["publish_start_time"], args["sentence"], questionId) == nil {
-			fmt.Println(err)
 			return errors.New("Database error")
 		}
 	}
@@ -216,7 +212,6 @@ func (m *QuestionModel) Delete(questionId int) error {
 		return errors.New("Database : query error")
 	}
 	if stmtOut.QueryRow(questionId) == nil {
-		fmt.Println(err)
 		return errors.New("Database error")
 	}
 	return nil

@@ -19,7 +19,7 @@ type Rank struct {
 	Rank       int    `json:"pos"`
 	Name       string `json:"team"`
 	Score      int    `json:"score"`
-	UpdateTime int    `json:"-"`
+	UpdateTime int    `json:"lastAccept"`
 }
 
 // 構造体のスライス

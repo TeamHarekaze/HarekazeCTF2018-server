@@ -88,14 +88,14 @@ func (c *Cache) Set(teamName string, questionID int) error {
 	}
 	bonus := 0
 
-	answerModel := AnswerModel.New()
-	isFast, err := answerModel.IsFast(questionID)
-	if err != nil {
-		return err
-	}
-	if isFast == true {
-		bonus = 10
-	}
+	// answerModel := AnswerModel.New()
+	// isFast, err := answerModel.IsFast(questionID)
+	// if err != nil {
+	// 	return err
+	// }
+	// if isFast == true {
+	// 	bonus = 10
+	// }
 
 	questionModel := QuestionModel.New()
 	score, err := questionModel.GetScore(questionID)

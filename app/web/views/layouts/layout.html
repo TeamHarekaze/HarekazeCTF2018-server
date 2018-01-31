@@ -57,7 +57,7 @@
                             <a id="countdown-timer" class="nav-link"></a>
                         </li>
                         {{ if .IsLoggedIn }}
-                        <li class="nav-item">
+                        <li class="nav-item{{ if eq $CurrentPage "me" }} active{{ end }}">
                             <a class="nav-link" href="/user/me">Profile</a>
                         </li>
                         <li class="nav-item">

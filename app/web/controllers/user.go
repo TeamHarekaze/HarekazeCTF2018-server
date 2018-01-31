@@ -222,11 +222,12 @@ func (c *UserController) GetMe() mvc.Result {
 	return mvc.View{
 		Name: "user/me.html",
 		Data: context.Map{
-			"UserName":   c.GetLoggedUserName(),
-			"UserID":     c.GetLoggedUserID(),
-			"TeamName":   c.GetLoggedTeamName(),
-			"TeamID":     c.GetLoggedTeamID(),
-			"IsLoggedIn": c.IsLoggedIn(),
+			"UserName":    c.GetLoggedUserName(),
+			"UserID":      c.GetLoggedUserID(),
+			"TeamName":    c.GetLoggedTeamName(),
+			"TeamID":      c.GetLoggedTeamID(),
+			"IsLoggedIn":  c.IsLoggedIn(),
+			"CurrentPage": "me",
 		},
 	}
 }

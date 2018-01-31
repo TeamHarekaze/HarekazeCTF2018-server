@@ -219,13 +219,19 @@ func (c *UserController) GetMe() mvc.Result {
 		return mvc.Response{Path: "/user/login"}
 	}
 
+	teamModel := TeamModel.New()
+	member, err := teamModel.GetMember(c.GetLoggedTeamID())
+
+	if err != nil {
+		return mvc.Response{Err: err}
+	}
+
 	return mvc.View{
 		Name: "user/me.html",
 		Data: context.Map{
 			"UserName":    c.GetLoggedUserName(),
-			"UserID":      c.GetLoggedUserID(),
 			"TeamName":    c.GetLoggedTeamName(),
-			"TeamID":      c.GetLoggedTeamID(),
+			"Member":      member,
 			"IsLoggedIn":  c.IsLoggedIn(),
 			"CurrentPage": "me",
 		},

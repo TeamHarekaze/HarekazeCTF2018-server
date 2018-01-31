@@ -13,8 +13,8 @@ import (
 	"github.com/kataras/iris/sessions/sessiondb/redis"
 	"github.com/kataras/iris/sessions/sessiondb/redis/service"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/md2html"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers"
+	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/md2html"
 )
 
 func Env_load() {
@@ -62,6 +62,9 @@ func main() {
 	mvc.New(app.Party("/question")).Register(sessionManager.Start).Handle(&controllers.QuestionController{})
 	mvc.New(app.Party("/answer")).Register(sessionManager.Start).Handle(&controllers.AnswerController{})
 	mvc.New(app.Party("/ranking")).Register(sessionManager.Start).Handle(&controllers.RankingController{})
+	//error page
+	mvc.New(app.Party("/500")).Register(sessionManager.Start).Handle(&controllers.Error500Controller{})
+	mvc.New(app.Party("/404")).Register(sessionManager.Start).Handle(&controllers.Error404Controller{})
 	//admin
 	if os.Getenv("RUN_ADMIN_CONSOLE") == "True" {
 		mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH"))).Register(sessionManager.Start).Handle(&controllers.Admin{})

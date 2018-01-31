@@ -15,10 +15,10 @@ import (
 
 // struct for rank
 type Rank struct {
-	Rank       int
-	Name       string
-	Score      int
-	UpdateTime int
+	Rank       int    `json:"pos"`
+	Name       string `json:"team"`
+	Score      int    `json:"score"`
+	UpdateTime int    `json:"lastAccept"`
 }
 
 // 構造体のスライス

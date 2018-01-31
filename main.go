@@ -74,6 +74,7 @@ func main() {
 		mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH") + "/question/delete")).Register(sessionManager.Start).Handle(&controllers.AdminQuestionDelete{})
 		mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH") + "/team/enable")).Register(sessionManager.Start).Handle(&controllers.AdminTeamEnable{})
 		mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH") + "/team/disable")).Register(sessionManager.Start).Handle(&controllers.AdminTeamDisable{})
+		mvc.New(app.Party("/" + os.Getenv("APP_ADMIN_HASH") + "/feed")).Register(sessionManager.Start).Handle(&controllers.AdminFeed{})
 		fmt.Printf("admin url is http://localhost:%s/%s\n", os.Getenv("APP_PORT"), os.Getenv("APP_ADMIN_HASH"))
 	}
 	// Run!!

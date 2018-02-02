@@ -85,16 +85,6 @@ func (c *Cache) Set(teamName string, questionID int) error {
 		}
 		return nil
 	}
-	bonus := 0
-
-	answerModel := AnswerModel.New()
-	isFast, err := answerModel.IsFast(questionID)
-	if err != nil {
-		return err
-	}
-	if isFast == true {
-		bonus = 10
-	}
 
 	questionModel := QuestionModel.New()
 	score, err := questionModel.GetScore(questionID)
@@ -107,7 +97,7 @@ func (c *Cache) Set(teamName string, questionID int) error {
 		return err
 	}
 	if err == redis.Nil {
-		err := c.Client.HSet(teamName, "score", score+bonus).Err()
+		err := c.Client.HSet(teamName, "score", score).Err()
 		if err != nil {
 			return err
 		}
@@ -117,7 +107,7 @@ func (c *Cache) Set(teamName string, questionID int) error {
 		}
 	} else {
 		old_score, _ := strconv.Atoi(val)
-		err := c.Client.HSet(teamName, "score", old_score+score+bonus).Err()
+		err := c.Client.HSet(teamName, "score", old_score+score).Err()
 		if err != nil {
 			return err
 		}

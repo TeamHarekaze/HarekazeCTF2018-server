@@ -32,7 +32,7 @@ func (c *AdminFeed) Get() mvc.Result {
 	defer rankingCache.Close()
 	ranks, err := rankingCache.Rank()
 	if err != nil {
-		return mvc.Response{Err: err, Code: 500}
+		return c.Error(err)
 	}
 
 	var feed = JSONFeed{}
@@ -40,7 +40,7 @@ func (c *AdminFeed) Get() mvc.Result {
 
 	output, err := json.Marshal(feed)
 	if err != nil {
-		return mvc.Response{Err: err, Code: 500}
+		return c.Error(err)
 	}
 
 	return mvc.Response{

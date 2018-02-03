@@ -24,7 +24,7 @@ func (c *AdminQuestionDelete) AnyBy(questionId int) mvc.Result {
 	questionModel := QuestionModel.New()
 	err := questionModel.Delete(questionId)
 	if err != nil {
-		return mvc.Response{Err: err, Code: 500}
+		return c.Error(err)
 	}
 	return mvc.Response{
 		Path: "/" + os.Getenv("APP_ADMIN_HASH"),

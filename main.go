@@ -15,6 +15,7 @@ import (
 
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers"
 	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/md2html"
+	"github.com/comail/colog"
 )
 
 func Env_load() {
@@ -26,12 +27,19 @@ func Env_load() {
 
 func main() {
 	Env_load()
+	// colog.SetFormatter(&colog.StdFormatter{Colors: true})
+	colog.Register()
 	app := iris.New()
 	app.StaticWeb("/asset", "app/web/public") //debug only
 	view := iris.HTML("app/web/views", ".html")
 	view.Layout("layouts/layout.html")
 	view.AddFunc("md2html", md2html.Md2Html)
 	app.RegisterView(view)
+
+	// 404 error page
+	app.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context) {
+		ctx.View("error/404.html")
+	})
 
 	// make session DB
 	sesstionDB := redis.New(service.Config{

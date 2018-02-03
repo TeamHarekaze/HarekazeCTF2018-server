@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"regexp"
 
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/TeamModel"
@@ -23,63 +22,89 @@ type UserController struct {
 	BaseController.Base
 }
 
+var (
+	username                        string
+	email                           string
+	password                        string
+	password_confirmation           string
+	makejointeam                    string
+	make_team_name                  string
+	make_team_password              string
+	make_team_password_confirmation string
+	join_team_name                  string
+	join_team_password              string
+	token                           string
+)
+
+func (c *UserController) registerTemplete(msgs ...string) mvc.Result {
+	if len(msgs) == 0 {
+		return mvc.View{
+			Name: "user/register.html",
+			Data: context.Map{
+				"Title":       "User Registration",
+				"Token":       c.MakeToken("/user/register"),
+				"IsLoggedIn":  c.IsLoggedIn(),
+				"CurrentPage": "register",
+			},
+		}
+	} else {
+		return mvc.View{
+			Name: "user/register.html",
+			Data: context.Map{
+				"Err":         msgs[0],
+				"Username":    username,
+				"Email":       email,
+				"Title":       "User Registration",
+				"Token":       c.MakeToken("/user/register"),
+				"IsLoggedIn":  c.IsLoggedIn(),
+				"CurrentPage": "register",
+			},
+		}
+	}
+}
+
 // GetRegister handles GET: http://localhost:8080/user/register.
 func (c *UserController) GetRegister() mvc.Result {
 	if c.IsLoggedIn() {
 		c.Logout()
 	}
-
-	return mvc.View{
-		Name: "user/register.html",
-		Data: context.Map{
-			"Title":       "User Registration",
-			"Token":       c.MakeToken("/user/register"),
-			"IsLoggedIn":  c.IsLoggedIn(),
-			"CurrentPage": "register",
-		},
-	}
+	return c.registerTemplete()
 }
 
 // PostRegister handles POST: http://localhost:8080/user/register.
 func (c *UserController) PostRegister() mvc.Result {
 	// get firstname, username and password from the form.
-	var (
-		username                        = c.Ctx.FormValue("username")
-		email                           = c.Ctx.FormValue("email")
-		password                        = c.Ctx.FormValue("password")
-		password_confirmation           = c.Ctx.FormValue("password_confirmation")
-		makejointeam                    = c.Ctx.FormValue("makejointeam")
-		make_team_name                  = c.Ctx.FormValue("make_team_name")
-		make_team_password              = c.Ctx.FormValue("make_team_password")
-		make_team_password_confirmation = c.Ctx.FormValue("make_team_password_confirmation")
-		join_team_name                  = c.Ctx.FormValue("join_team_name")
-		join_team_password              = c.Ctx.FormValue("join_team_password")
-		token                           = c.Ctx.FormValue("csrf_token")
-	)
+	username = c.Ctx.FormValue("username")
+	email = c.Ctx.FormValue("email")
+	password = c.Ctx.FormValue("password")
+	password_confirmation = c.Ctx.FormValue("password_confirmation")
+	makejointeam = c.Ctx.FormValue("makejointeam")
+	make_team_name = c.Ctx.FormValue("make_team_name")
+	make_team_password = c.Ctx.FormValue("make_team_password")
+	make_team_password_confirmation = c.Ctx.FormValue("make_team_password_confirmation")
+	join_team_name = c.Ctx.FormValue("join_team_name")
+	join_team_password = c.Ctx.FormValue("join_team_password")
+	token = c.Ctx.FormValue("csrf_token")
 
 	if !c.CheckTaken(token, "/user/register") {
-		err := errors.New("token error!!")
-		return mvc.Response{Err: err, Code: 400}
+		return c.registerTemplete("token error.")
 	}
 	// validation check
 	if username == "" || email == "" || password == "" {
-		return mvc.Response{Err: errors.New("user name or user email or user password is null")}
+		return c.registerTemplete("User name or user email or user password is null.")
 	} else if !regexp.MustCompile(`^[a-zA-Z0-9]+$`).MatchString(username) {
-		err := errors.New("User name is 'a-z A-Z 0-9' only")
-		return mvc.Response{Err: err}
+		return c.registerTemplete("User name is 'a-z A-Z 0-9' only.")
 	} else if !regexp.MustCompile(`^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$`).MatchString(email) {
-		err := errors.New("The format of the email is incorrect.")
-		return mvc.Response{Err: err}
+		return c.registerTemplete("The format of the email is incorrect.")
 	} else if password != password_confirmation {
-		err := errors.New("User passwords do not match")
-		return mvc.Response{Err: err}
+		return c.registerTemplete("User passwords do not match")
 	} else if makejointeam != "join_team" && makejointeam != "make_team" {
-		return mvc.Response{Err: errors.New("unkown radio status")}
+		return c.registerTemplete("Unkown radio status.")
 	} else if makejointeam == "make_team" {
 		if make_team_name == "" || make_team_password == "" {
-			return mvc.Response{Err: errors.New("team name or team password is null")}
+			return c.registerTemplete("Team name or team password is null.")
 		} else if make_team_password != make_team_password_confirmation {
-			return mvc.Response{Err: errors.New("Team passwords do not match")}
+			return c.registerTemplete("Team passwords do not match")
 		}
 	}
 
@@ -90,26 +115,25 @@ func (c *UserController) PostRegister() mvc.Result {
 	if makejointeam == "join_team" {
 		status, err := teamModel.PasswordCheck(join_team_name, join_team_password)
 		if err != nil {
-			return mvc.Response{Err: err}
+			return c.Error(err)
 		}
 		if !status {
-			return mvc.Response{Err: errors.New("Team password or Team name do not match")}
+			return c.registerTemplete("Team password or Team name do not match.")
 		}
 	}
 
 	//used check
 	usernameUsed, err := userModel.UsedChack(username, email)
 	if usernameUsed {
-		err := errors.New("username or email is already used")
-		return mvc.Response{Err: err}
+		return c.registerTemplete("Username or email is already used.")
 	}
 	if makejointeam == "make_team" {
 		teamnameUsed, err := teamModel.UsedChack(make_team_name)
 		if err != nil {
-			return mvc.Response{Err: err}
+			return c.Error(err)
 		}
 		if teamnameUsed {
-			return mvc.Response{Err: errors.New("teamname is already used")}
+			return c.registerTemplete("Teamname is already used.")
 		}
 	}
 
@@ -117,7 +141,7 @@ func (c *UserController) PostRegister() mvc.Result {
 	if makejointeam == "make_team" {
 		err = teamModel.Add(make_team_name, make_team_password)
 		if err != nil {
-			return mvc.Response{Err: err}
+			return c.Error(err)
 		}
 	}
 	//get team name
@@ -128,7 +152,7 @@ func (c *UserController) PostRegister() mvc.Result {
 	//add user
 	err = userModel.Add(username, email, password, teamName)
 	if err != nil {
-		return mvc.Response{Err: err}
+		return c.Error(err)
 	}
 
 	// create the new user, the password will be hashed by the service.
@@ -153,7 +177,32 @@ func (c *UserController) PostRegister() mvc.Result {
 		// but it's good to know you can set a custom code;
 		// Code: 303,
 	}
+}
 
+func (c *UserController) loginTemplete(msgs ...string) mvc.Result {
+	if len(msgs) != 1 {
+		return mvc.View{
+			Name: "user/login.html",
+			Data: context.Map{
+				"Title":       "User Login",
+				"Token":       c.MakeToken("/user/login"),
+				"IsLoggedIn":  c.IsLoggedIn(),
+				"CurrentPage": "login",
+			},
+		}
+	} else {
+		return mvc.View{
+			Name: "user/login.html",
+			Data: context.Map{
+				"Err":         msgs[0],
+				"Email":       email,
+				"Title":       "User Login",
+				"Token":       c.MakeToken("/user/login"),
+				"IsLoggedIn":  c.IsLoggedIn(),
+				"CurrentPage": "login",
+			},
+		}
+	}
 }
 
 // GetLogin handles GET: http://localhost:8080/user/login.
@@ -162,49 +211,36 @@ func (c *UserController) GetLogin() mvc.Result {
 		// if it's already logged in then destroy the previous session.
 		c.Logout()
 	}
-
-	return mvc.View{
-		Name: "user/login.html",
-		Data: context.Map{
-			"Title":       "User Login",
-			"Token":       c.MakeToken("/user/login"),
-			"IsLoggedIn":  c.IsLoggedIn(),
-			"CurrentPage": "login",
-		},
-	}
+	return c.loginTemplete()
 }
 
 // PostLogin handles POST: http://localhost:8080/user/login.
 func (c *UserController) PostLogin() mvc.Result {
-	var (
-		email    = c.Ctx.FormValue("email")
-		password = c.Ctx.FormValue("password")
-		token    = c.Ctx.FormValue("csrf_token")
-	)
+	email = c.Ctx.FormValue("email")
+	password = c.Ctx.FormValue("password")
+	token = c.Ctx.FormValue("csrf_token")
 
 	if !c.CheckTaken(token, "/user/login") {
-		err := errors.New("token error!!")
-		return mvc.Response{Err: err, Code: 400}
+		return c.loginTemplete("Token error.")
 	} else if !regexp.MustCompile(`^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$`).MatchString(email) {
-		err := errors.New("The format of the email is incorrect.")
-		return mvc.Response{Err: err}
+		return c.loginTemplete("The format of the email is incorrect.")
 	}
 
 	userModel := UserModel.New()
 	existence, err := userModel.PasswordCheck(email, password)
 	if err != nil {
-		return mvc.Response{Err: err}
+		return c.Error(err)
 	}
 	if existence == false {
-		return mvc.Response{Err: errors.New("user not found")}
+		return c.loginTemplete("User not found.")
 	}
 	username, err := userModel.GetNameFromEmail(email)
 
 	if err != nil {
-		return mvc.Response{Err: err}
+		return c.Error(err)
 	}
 	if c.LoginUser(username) != nil {
-		return mvc.Response{Err: errors.New("session error")}
+		return c.Error("Session error.")
 	}
 
 	return mvc.Response{
@@ -223,7 +259,7 @@ func (c *UserController) GetMe() mvc.Result {
 	member, err := teamModel.GetMember(c.GetLoggedTeamID())
 
 	if err != nil {
-		return mvc.Response{Err: err}
+		return c.Error(err)
 	}
 
 	return mvc.View{

@@ -31,7 +31,7 @@ func (c *QuestionController) Get() mvc.Result {
 	// questionModel := QuestionModel.New()
 	// questions, err := questionModel.List(c.GetLoggedTeamName())
 	if err != nil {
-		return mvc.Response{Err: err}
+		return c.Error(err)
 	}
 
 	var homeView = mvc.View{

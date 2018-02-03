@@ -26,7 +26,7 @@ func (c *AdminQuestionList) Get() mvc.Result {
 	questionModel := QuestionModel.New()
 	questions, err := questionModel.FindAll()
 	if err != nil {
-		return mvc.Response{Err: err}
+		return c.Error(err)
 	}
 
 	return mvc.View{

@@ -18,7 +18,7 @@ func (c *RankingController) Get() mvc.Result {
 	defer rankingCache.Close()
 	ranks, err := rankingCache.Rank()
 	if err != nil {
-		return mvc.Response{Err: err}
+		return c.Error(err)
 	}
 
 	var homeView = mvc.View{

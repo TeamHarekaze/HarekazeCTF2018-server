@@ -33,15 +33,3 @@ func (m *Base) Open() {
 func (m *Base) Close() {
 	m.Connection.Close()
 }
-
-// func (m *Base) All() (*sql.Rows, error) {
-//     m.Open()
-//     defer m.Close()
-
-//     query := fmt.Sprintf("SELECT * FROM %s", m.Table)
-//     rows, err := m.Connection.Query(query)
-//     if err != nil {
-//         return nil, errors.New("Database error")
-//     }
-//     return rows, nil
-// }

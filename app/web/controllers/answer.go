@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/AnswerModel"
@@ -17,10 +16,46 @@ type AnswerController struct {
 	BaseController.Base
 }
 
-func (c *AnswerController) answerViewTemplete(data context.Map) mvc.View {
-	return mvc.View{
-		Name: "answer/index.html",
-		Data: data,
+func (c *AnswerController) answerViewTemplete(qID interface{}, msgs ...string) mvc.View {
+	questionModel := QuestionModel.New()
+	question, err := questionModel.FindId(qID.(int))
+	if err != nil {
+		c.Error(err)
+	}
+	if len(msgs) != 2 {
+		return mvc.View{
+			Name: "answer/index.html",
+			Data: context.Map{
+				"Title":         question.Name,
+				"Sentence":      question.Sentence,
+				"Genre":         question.Genre,
+				"Score":         question.Score,
+				"IsSubmitBlock": false,
+				"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", qID.(int))),
+				"IsLoggedIn":    c.IsLoggedIn(),
+				"CurrentPage":   "questions",
+			},
+		}
+	} else {
+		isSubmitBlock := false
+		if msgs[0] == "success" {
+			isSubmitBlock = true
+		}
+		return mvc.View{
+			Name: "answer/index.html",
+			Data: context.Map{
+				"Title":         question.Name,
+				"Sentence":      question.Sentence,
+				"Genre":         question.Genre,
+				"Score":         question.Score,
+				"IsSubmitBlock": isSubmitBlock,
+				"Message":       msgs[1],
+				"MessageType":   msgs[0],
+				"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", qID.(int))),
+				"IsLoggedIn":    c.IsLoggedIn(),
+				"CurrentPage":   "questions",
+			},
+		}
 	}
 }
 
@@ -32,51 +67,28 @@ func (c *AnswerController) GetBy(questionId int) mvc.Result {
 	} else if c.IsBeforeCompetition() {
 		return mvc.Response{Code: 404}
 	} else if !c.IsNowCompetition() {
-		questionModel := QuestionModel.New()
-		question, _ := questionModel.FindId(questionId)
-		return c.answerViewTemplete(context.Map{
-			"Title":         question.Name,
-			"Sentence":      question.Sentence,
-			"Genre":         question.Genre,
-			"Score":         question.Score,
-			"IsSubmitBlock": false,
-			"Message":       "The competition end.",
-			"MessageType":   "danger",
-			"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
-			"IsLoggedIn":    c.IsLoggedIn(),
-			"CurrentPage":   "questions",
-		})
+		return c.answerViewTemplete(questionId, "danger", "The competition end.")
 	}
 
 	questionModel := QuestionModel.New()
-	question, err := questionModel.FindId(questionId)
+	isExit, err := questionModel.ExitByID(questionId)
 	if err != nil {
-		return mvc.Response{Err: err}
+		return c.Error(err)
 	}
-	message := ""
-	messageType := ""
+	if isExit == false {
+		return c.Error("Can not found question.", 404)
+	}
+
 	answerModel := AnswerModel.New()
 	isCorrected, err := answerModel.IsCorrected(questionId, c.GetLoggedTeamID())
 	if err != nil {
-		return mvc.Response{Err: err}
+		return c.Error(err)
 	}
 	if isCorrected {
-		message = "Question already solved"
-		messageType = "success"
+		return c.answerViewTemplete(questionId, "success", "Question already solved")
+	} else {
+		return c.answerViewTemplete(questionId)
 	}
-
-	return c.answerViewTemplete(context.Map{
-		"Title":         question.Name,
-		"Sentence":      question.Sentence,
-		"Genre":         question.Genre,
-		"Score":         question.Score,
-		"IsSubmitBlock": isCorrected,
-		"Message":       message,
-		"MessageType":   messageType,
-		"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
-		"IsLoggedIn":    c.IsLoggedIn(),
-		"CurrentPage":   "questions",
-	})
 }
 
 // PostBy handles GET: http://localhost:8080/answer/<quesion id>.
@@ -85,29 +97,25 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		c.SetRedirectPath(fmt.Sprintf("/answer/%d", questionId))
 		return mvc.Response{Path: "/user/login"}
 	} else if c.IsBeforeCompetition() {
-		return mvc.Response{Code: 404}
+		return c.Error("Competition is not start.", 404)
 	} else if !c.IsNowCompetition() {
-		questionModel := QuestionModel.New()
-		question, _ := questionModel.FindId(questionId)
-		return c.answerViewTemplete(context.Map{
-			"Title":         question.Name,
-			"Sentence":      question.Sentence,
-			"Genre":         question.Genre,
-			"Score":         question.Score,
-			"IsSubmitBlock": true,
-			"Message":       "The competition end.",
-			"MessageType":   "danger",
-			"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
-			"IsLoggedIn":    c.IsLoggedIn(),
-			"CurrentPage":   "questions",
-		})
+		return c.answerViewTemplete(questionId, "danger", "The competition end.")
 	}
+	questionModel := QuestionModel.New()
+	isExit, err := questionModel.ExitByID(questionId)
+	if err != nil {
+		return c.Error(err)
+	}
+	if isExit == false {
+		return c.Error("Can not found question.", 404)
+	}
+
 	var (
 		flag  = c.Ctx.FormValue("flag")
 		token = c.Ctx.FormValue("csrf_token")
 	)
 	if !c.CheckTaken(token, fmt.Sprintf("/answer/%d", questionId)) {
-		return mvc.Response{Err: errors.New("token error"), Code: 400}
+		c.answerViewTemplete(questionId, "danger", "Token error.")
 	}
 
 	message := ""
@@ -116,15 +124,15 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 	answerModel := AnswerModel.New()
 	isCorrected, err := answerModel.IsCorrected(questionId, c.GetLoggedTeamID())
 	if err != nil {
-		return mvc.Response{Err: err}
+		return c.Error(err)
 	}
 	if isCorrected == false {
 		isCorrect, err := answerModel.CheckFlag(questionId, flag)
 		if err != nil {
-			return mvc.Response{Err: err}
+			return c.Error(err)
 		}
-		if answerModel.Insert(questionId, c.GetLoggedUserID(), flag) != nil {
-			return mvc.Response{Err: errors.New("db error")}
+		if err := answerModel.Insert(questionId, c.GetLoggedUserID(), flag); err != nil {
+			return c.Error(err)
 		}
 		message = "Incorrect answer"
 		messageType = "danger"
@@ -133,13 +141,13 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 			defer rankingCache.Close()
 			err := rankingCache.Set(c.GetLoggedTeamName(), questionId)
 			if err != nil {
-				return mvc.Response{Err: err}
+				return c.Error(err)
 			}
 			solveCache := SolveCache.New()
 			defer solveCache.Close()
 			err = solveCache.Set(questionId, c.GetLoggedTeamName())
 			if err != nil {
-				return mvc.Response{Err: err}
+				return c.Error(err)
 			}
 			message = "Correct answer"
 			messageType = "success"
@@ -148,18 +156,5 @@ func (c *AnswerController) PostBy(questionId int) mvc.Result {
 		message = "Question already solved"
 		messageType = "success"
 	}
-	questionModel := QuestionModel.New()
-	question, _ := questionModel.FindId(questionId)
-	return c.answerViewTemplete(context.Map{
-		"Title":         question.Name,
-		"Sentence":      question.Sentence,
-		"Genre":         question.Genre,
-		"Score":         question.Score,
-		"IsSubmitBlock": isCorrected,
-		"Message":       message,
-		"MessageType":   messageType,
-		"Token":         c.MakeToken(fmt.Sprintf("/answer/%d", questionId)),
-		"IsLoggedIn":    c.IsLoggedIn(),
-		"CurrentPage":   "questions",
-	})
+	return c.answerViewTemplete(questionId, messageType, message)
 }

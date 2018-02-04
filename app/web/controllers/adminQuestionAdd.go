@@ -54,14 +54,14 @@ func (c *AdminQuestionAdd) Post() mvc.Result {
 	)
 	if !c.CheckTaken(token, fmt.Sprintf("/%s/question/add", os.Getenv("APP_ADMIN_HASH"))) {
 		err := errors.New("token error!!")
-		return mvc.Response{Err: err, Code: 400}
+		return c.Error(err)
 	}
 	if publish_now == "off" && !regexp.MustCompile(`/^(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})$/`).MatchString(publish_start_time) {
 		err := errors.New("publish_start_time is yyyy-MM-dd HH:mm:ss!!")
-		return mvc.Response{Err: err, Code: 500}
+		return c.Error(err)
 	} else if !regexp.MustCompile(`^[0-9]+$`).MatchString(score) {
 		err := errors.New("Score is number!!")
-		return mvc.Response{Err: err, Code: 500}
+		return c.Error(err)
 	}
 	questionModel := QuestionModel.New()
 	err := questionModel.Save(map[string]string{
@@ -75,7 +75,7 @@ func (c *AdminQuestionAdd) Post() mvc.Result {
 		"sentence":           sentence,
 	})
 	if err != nil {
-		return mvc.Response{Err: err, Code: 500}
+		return c.Error(err)
 	}
 	return mvc.Response{
 		Path: "/" + os.Getenv("APP_ADMIN_HASH"),

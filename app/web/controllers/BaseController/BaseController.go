@@ -1,12 +1,14 @@
 package BaseController
 
 import (
+	"log"
 	"math/rand"
 	"os"
 	"time"
 
 	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/UserModel"
 	"github.com/kataras/iris"
+	"github.com/kataras/iris/mvc"
 	"github.com/kataras/iris/sessions"
 )
 
@@ -114,4 +116,19 @@ func (c *Base) IsBeforeCompetition() bool {
 		return true
 	}
 	return false
+}
+
+func (c *Base) Error(err interface{}, codes ...int) mvc.Result {
+	if len(codes) == 1 && codes[0] == 404 {
+		return mvc.View{
+			Name: "error/404.html",
+			Code: 404,
+		}
+	} else {
+		log.Printf("error: %s.", err)
+		return mvc.View{
+			Name: "error/500.html",
+			Code: 500,
+		}
+	}
 }

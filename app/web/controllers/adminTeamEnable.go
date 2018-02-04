@@ -24,7 +24,7 @@ func (c *AdminTeamEnable) GetBy(teamId int) mvc.Result {
 	teamModel := TeamModel.New()
 	err := teamModel.Enable(teamId)
 	if err != nil {
-		return mvc.Response{Err: err, Code: 500}
+		return c.Error(err)
 	}
 	return mvc.Response{
 		Path: "/" + os.Getenv("APP_ADMIN_HASH") + "/team",

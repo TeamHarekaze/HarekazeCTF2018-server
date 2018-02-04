@@ -53,12 +53,12 @@ func (m *UserModel) All() ([]User, error) {
 	query := fmt.Sprintf("SELECT id, name, email, enable FROM %s", m.Table)
 	rows, err := m.Connection.Query(query)
 	if err != nil {
-		return nil, errors.New("Database error")
+		return nil, err
 	}
 	for rows.Next() {
 		var user User
 		if err := rows.Scan(&user.id, &user.name, &user.email, &user.enable); err != nil {
-			return users, errors.New("Database error")
+			return users, err
 		}
 		users = append(users, user)
 	}
@@ -73,8 +73,8 @@ func (m *UserModel) GetNameFromEmail(email string) (string, error) {
 	if err != nil {
 		return "", errors.New("Database : query error")
 	}
-	if stmtOut.QueryRow(email).Scan(&name) != nil {
-		return "", errors.New("Database error")
+	if err := stmtOut.QueryRow(email).Scan(&name); err != nil {
+		return "", err
 	}
 	if name == "" {
 		return "", errors.New("user not found")
@@ -91,12 +91,12 @@ func (m *UserModel) AllEnable() ([]User, error) {
 	query := fmt.Sprintf("SELECT id, name, email, enable FROM %s WHERE enable = 1", m.Table)
 	rows, err := m.Connection.Query(query)
 	if err != nil {
-		return nil, errors.New("Database error")
+		return nil, err
 	}
 	for rows.Next() {
 		var user User
 		if err := rows.Scan(&user.id, &user.name, &user.email, &user.enable); err != nil {
-			return users, errors.New("Database error")
+			return users, err
 		}
 		users = append(users, user)
 	}
@@ -110,10 +110,10 @@ func (m *UserModel) FindId(id int) (User, error) {
 	var user User
 	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("SELECT id, name, email, enable FROM %s WHERE id = ?", m.Table))
 	if err != nil {
-		return user, errors.New("Database error")
+		return user, err
 	}
 	if stmtOut.QueryRow(id).Scan(&user.id, &user.name, &user.email, &user.enable) != nil {
-		return user, errors.New("Database error")
+		return user, err
 	}
 	return user, nil
 }
@@ -126,7 +126,7 @@ func (m *UserModel) Add(name string, email string, password string, teamName str
 	query := fmt.Sprintf("INSERT INTO %s (name, email, hashed_password, team_id) SELECT ?, ?, ?, id FROM team WHERE name = ?", m.Table)
 	_, err := m.Connection.Exec(query, name, email, hashedPassword, teamName)
 	if err != nil {
-		return errors.New("Database error")
+		return err
 	}
 	return nil
 }
@@ -154,10 +154,10 @@ func (m *UserModel) Enable(id int) error {
 
 	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("UPDATE %s SET enable = 1 WHERE id = ?", m.Table))
 	if err != nil {
-		return errors.New("Database error")
+		return err
 	}
 	if stmtOut.QueryRow(id) == nil {
-		return errors.New("Database error")
+		return errors.New("Database error(stmtOut.QueryRow(id) == nil)")
 	}
 	return nil
 }
@@ -171,7 +171,7 @@ func (m *UserModel) Disenable(id int) error {
 		return errors.New("Database : query error")
 	}
 	if stmtOut.QueryRow(id) == nil {
-		return errors.New("Database error")
+		return errors.New("Database error(stmtOut.QueryRow(id))")
 	}
 	return nil
 }
@@ -190,7 +190,7 @@ func (m *UserModel) UsedChack(name string, email string) (bool, error) {
 	for rows.Next() {
 		var user User
 		if err := rows.Scan(&user.id, &user.name, &user.email, &user.enable); err != nil {
-			return false, errors.New("Database error")
+			return false, err
 		}
 		users = append(users, user)
 	}

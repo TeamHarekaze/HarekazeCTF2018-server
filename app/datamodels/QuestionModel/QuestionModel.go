@@ -125,7 +125,7 @@ func (m *QuestionModel) List(teamName string) ([]Question, error) {
 	for rows.Next() {
 		var question Question
 		if err := rows.Scan(&question.IsSolve, &question.Id, &question.Name, &question.Score, &question.Genre, &question.SolvesCount, &question.AutherName); err != nil {
-			return questions, errors.New("Database error")
+			return questions, err
 		}
 		questions = append(questions, question)
 	}
@@ -141,9 +141,9 @@ func (m *QuestionModel) FindId(id int) (Question, error) {
 	if err != nil {
 		return question, errors.New("Database query error")
 	}
-	if stmtOut.QueryRow(id).Scan(&question.Id, &question.Name, &question.Flag, &question.Score,
-		&question.Sentence, &question.Genre, &question.PublishStartTime) != nil {
-		return question, errors.New("Database error")
+	if err := stmtOut.QueryRow(id).Scan(&question.Id, &question.Name, &question.Flag, &question.Score,
+		&question.Sentence, &question.Genre, &question.PublishStartTime); err != nil {
+		return question, err
 	}
 	return question, nil
 }
@@ -164,12 +164,12 @@ func (m *QuestionModel) Save(args map[string]string) error {
 	if args["publish_now"] == "on" {
 		_, err := m.Connection.Exec(query, args["name"], args["flag"], args["genre"], args["score"], args["sentence"], args["auther_id"])
 		if err != nil {
-			return errors.New("Database error")
+			return err
 		}
 	} else {
 		_, err := m.Connection.Exec(query, args["name"], args["flag"], args["genre"], args["score"], args["publish_start_time"], args["sentence"], args["auther_id"])
 		if err != nil {
-			return errors.New("Database error")
+			return err
 		}
 	}
 	return nil
@@ -191,11 +191,11 @@ func (m *QuestionModel) Update(questionId int, args map[string]string) error {
 	}
 	if args["publish_now"] == "on" {
 		if stmtOut.QueryRow(args["name"], args["flag"], args["score"], args["genre"], args["sentence"], questionId) == nil {
-			return errors.New("Database error")
+			return errors.New("Database error(stmtOut.QueryRow)")
 		}
 	} else {
 		if stmtOut.QueryRow(args["name"], args["flag"], args["score"], args["genre"], args["publish_start_time"], args["sentence"], questionId) == nil {
-			return errors.New("Database error")
+			return errors.New("Database error(stmtOut.QueryRow)")
 		}
 	}
 
@@ -212,7 +212,7 @@ func (m *QuestionModel) Delete(questionId int) error {
 		return errors.New("Database : query error")
 	}
 	if stmtOut.QueryRow(questionId) == nil {
-		return errors.New("Database error")
+		return errors.New("Database error(stmtOut.QueryRow)")
 	}
 	return nil
 }
@@ -226,8 +226,23 @@ func (m *QuestionModel) GetScore(questionID int) (int, error) {
 	if err != nil {
 		return 0, errors.New("Database query error")
 	}
-	if stmtOut.QueryRow(questionID).Scan(&score) != nil {
-		return 0, errors.New("Database error")
+	if err := stmtOut.QueryRow(questionID).Scan(&score); err != nil {
+		return 0, err
 	}
 	return score, nil
+}
+
+func (m *QuestionModel) ExitByID(questionID int) (bool, error) {
+	m.Open()
+	defer m.Close()
+	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("SELECT COUNT(id) FROM %s WHERE id = ?", m.Table))
+	if err != nil {
+		return false, err
+	}
+
+	var count int
+	if err := stmtOut.QueryRow(questionID).Scan(&count); err != nil {
+		return false, err
+	}
+	return count != 0, nil
 }

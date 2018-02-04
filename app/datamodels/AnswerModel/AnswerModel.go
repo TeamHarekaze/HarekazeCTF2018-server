@@ -47,8 +47,8 @@ func (m *AnswerModel) CheckFlag(id int, flag string) (bool, error) {
 		return false, errors.New("Database query error")
 	}
 	var count int
-	if stmtOut.QueryRow(id, flag).Scan(&count) != nil {
-		return false, errors.New("Database error")
+	if err := stmtOut.QueryRow(id, flag).Scan(&count); err != nil {
+		return false, err
 	}
 	return count > 0, nil
 }
@@ -68,13 +68,13 @@ func (m *AnswerModel) IsCorrected(questionId int, teamId interface{}) (bool, err
 		return false, errors.New("Database query error")
 	}
 	var count int
-	if stmtOut.QueryRow(questionId, teamId.(string)).Scan(&count) != nil {
-		return false, errors.New("Database error")
+	if err := stmtOut.QueryRow(questionId, teamId.(string)).Scan(&count); err != nil {
+		return false, err
 	}
 	return count > 0, nil
 }
 
-func (m *AnswerModel) Insert(questionId int, userId interface{}, flag string) error {
+func (m *AnswerModel) Insert(questionId interface{}, userId interface{}, flag string) error {
 	m.Open()
 	defer m.Close()
 
@@ -131,8 +131,8 @@ func (m *AnswerModel) IsFast(questionID int) (bool, error) {
 	if err != nil {
 		return false, errors.New("Database query error")
 	}
-	if stmtOut.QueryRow(questionID).Scan(&count) != nil {
-		return false, errors.New("Database error")
+	if err := stmtOut.QueryRow(questionID).Scan(&count); err != nil {
+		return false, err
 	}
 	return count == 1, nil
 }

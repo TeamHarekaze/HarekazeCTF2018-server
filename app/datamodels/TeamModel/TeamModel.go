@@ -44,7 +44,7 @@ func (m *TeamModel) All() ([]Team, error) {
 	query := fmt.Sprintf("SELECT id, name, enable FROM %s", m.Table)
 	rows, err := m.Connection.Query(query)
 	if err != nil {
-		return nil, errors.New("Database error")
+		return nil, err
 	}
 	for rows.Next() {
 		var team Team
@@ -64,12 +64,12 @@ func (m *TeamModel) AllEnable() ([]Team, error) {
 	query := fmt.Sprintf("SELECT id, name, email, enable FROM %s WHERE enable = 1", m.Table)
 	rows, err := m.Connection.Query(query)
 	if err != nil {
-		return nil, errors.New("Database error")
+		return nil, err
 	}
 	for rows.Next() {
 		var team Team
 		if err := rows.Scan(&team.Id, &team.Name, &team.Enable); err != nil {
-			return teams, errors.New("Database error")
+			return teams, err
 		}
 		teams = append(teams, team)
 	}
@@ -99,7 +99,7 @@ func (m *TeamModel) Disable(id int) error {
 		return errors.New("Database query error")
 	}
 	if stmtOut.QueryRow(id) == nil {
-		return errors.New("Database error")
+		return errors.New("Database error(stmtOut.QueryRow(id))")
 	}
 	return nil
 }
@@ -143,7 +143,7 @@ func (m *TeamModel) Add(name string, password string) error {
 	query := fmt.Sprintf("INSERT INTO %s (name, hashed_password) VALUES(?, ?)", m.Table)
 	_, err := m.Connection.Exec(query, name, hashedPassword)
 	if err != nil {
-		return errors.New("Database error")
+		return err
 	}
 	return nil
 }

@@ -26,7 +26,7 @@ func (c *AdminTeamList) Get() mvc.Result {
 	teamModel := TeamModel.New()
 	teams, err := teamModel.All()
 	if err != nil {
-		return mvc.Response{Err: err, Code: 500}
+		return c.Error(err)
 	}
 	return mvc.View{
 		Name: "admin/teamList.html",

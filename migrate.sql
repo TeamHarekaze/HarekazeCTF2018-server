@@ -23,7 +23,7 @@ CREATE TABLE `team` (
 CREATE TABLE `question` (
     `id` INT(60) PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(40) UNIQUE NOT NULL,
-    `flag` VARCHAR(40),
+    `flag` VARCHAR(128),
     `genre` VARCHAR(40),
     `score` INT(60),
     `author_id` INT(60),

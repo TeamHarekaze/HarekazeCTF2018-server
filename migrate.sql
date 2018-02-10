@@ -35,7 +35,7 @@ CREATE TABLE `answer` (
     `id` INT(60) PRIMARY KEY AUTO_INCREMENT,
     `user_id` INT(60),
     `question_id` INT(60),
-    `flag` VARCHAR(40),
+    `flag` VARCHAR(128),
     `create_time` TIMESTAMP(4) NOT NULL DEFAULT CURRENT_TIMESTAMP(4)
 )DEFAULT CHARSET=utf8;
 

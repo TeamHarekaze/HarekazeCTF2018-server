@@ -59,7 +59,7 @@ func (m *AnswerModel) IsCorrected(questionId int, teamId interface{}) (bool, err
 
 	query := fmt.Sprintf(`
 		SELECT COUNT(*) FROM answer
-			INNER JOIN question ON question.flag = answer.flag
+			INNER JOIN question ON question.id = answer.question_id AND question.flag = answer.flag
 			INNER JOIN user ON user.id = answer.user_id
 			WHERE answer.question_id = ? AND user.team_id = ?
 	`)

@@ -235,7 +235,7 @@ func (m *QuestionModel) GetScore(questionID int) (int, error) {
 func (m *QuestionModel) ExitByID(questionID int) (bool, error) {
 	m.Open()
 	defer m.Close()
-	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("SELECT COUNT(id) FROM %s WHERE id = ?", m.Table))
+	stmtOut, err := m.Connection.Prepare(fmt.Sprintf("SELECT COUNT(id) FROM %s WHERE id = ? AND publish_start_time < NOW()", m.Table))
 	if err != nil {
 		return false, err
 	}

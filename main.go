@@ -13,8 +13,8 @@ import (
 	"github.com/kataras/iris/sessions/sessiondb/redis"
 	"github.com/kataras/iris/sessions/sessiondb/redis/service"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/md2html"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/lib/md2html"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/web/controllers"
 	"github.com/comail/colog"
 )
 
@@ -30,8 +30,8 @@ func main() {
 	// colog.SetFormatter(&colog.StdFormatter{Colors: true})
 	colog.Register()
 	app := iris.New()
-	app.StaticWeb("/asset", "app/web/public") //debug only
-	view := iris.HTML("app/web/views", ".html")
+	app.StaticWeb("/asset", "web/public") //debug only
+	view := iris.HTML("web/views", ".html")
 	view.Layout("layouts/layout.html")
 	view.AddFunc("md2html", md2html.Md2Html)
 	app.RegisterView(view)

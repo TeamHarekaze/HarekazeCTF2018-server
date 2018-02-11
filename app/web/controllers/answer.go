@@ -3,10 +3,10 @@ package controllers
 import (
 	"fmt"
 
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/cachemodels/RankingCache"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/cachemodels/SolveCache"
 	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/datamodels/AnswerModel"
 	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/datamodels/QuestionModel"
-	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/redismodels/RankingCache"
-	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/redismodels/SolveCache"
 	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/web/controllers/BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/BaseModel"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/datamodels/BaseModel"
 )
 
 const (

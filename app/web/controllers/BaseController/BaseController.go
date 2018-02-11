@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/UserModel"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/datamodels/UserModel"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
 	"github.com/kataras/iris/sessions"

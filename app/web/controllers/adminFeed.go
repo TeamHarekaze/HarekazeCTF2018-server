@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/RankingCache"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/redismodels/RankingCache"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/web/controllers/BaseController"
 	"github.com/kataras/iris/mvc"
 )
 

@@ -13,8 +13,8 @@ import (
 	"github.com/kataras/iris/sessions/sessiondb/redis"
 	"github.com/kataras/iris/sessions/sessiondb/redis/service"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/lib/md2html"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/web/controllers"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/lib/md2html"
 	"github.com/comail/colog"
 )
 

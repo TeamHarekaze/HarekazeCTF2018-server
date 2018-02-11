@@ -6,8 +6,8 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/QuestionModel"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/datamodels/QuestionModel"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/web/controllers/BaseController"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 )

@@ -1,4 +1,4 @@
-# HarekazeCTF-Competition
+# HarekazeCTF2018-server
 
 ## Directory structure
 ```
@@ -12,15 +12,15 @@
 ## 開発環境構築方法
 - `golangのインストール済みであること`
 - `mysql, redisにアクセスできる環境であること`
-  - [mysql, redisの簡単構築](https://github.com/HayatoDoi/HarekazeCTF-Competition/tree/master/src#mysql-redis%E3%81%AE%E7%B0%A1%E5%8D%98%E6%A7%8B%E7%AF%89)
+  - [mysql, redisの簡単構築](https://github.com/TeamHarekaze/HarekazeCTF2018-server/tree/master/src#mysql-redis%E3%81%AE%E7%B0%A1%E5%8D%98%E6%A7%8B%E7%AF%89)
 1. クローン
 ```shell
-git clone https://github.com/HayatoDoi/HarekazeCTF-Competition.git
+git clone https://github.com/TeamHarekaze/HarekazeCTF2018-server.git
 ```
 
 2. 作業ディレクトリに移動
 ```shell
-cd HarekazeCTF-Competition/src
+cd HarekazeCTF2018-server/src
 ```
 
 3. ライブラリのインストール

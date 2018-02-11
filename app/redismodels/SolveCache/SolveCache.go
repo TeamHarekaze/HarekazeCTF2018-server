@@ -4,9 +4,9 @@ import (
 	"io/ioutil"
 	"reflect"
 
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/AnswerModel"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/datamodels/QuestionModel"
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/redismodels/BaseCache"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/datamodels/AnswerModel"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/datamodels/QuestionModel"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/redismodels/BaseCache"
 	"github.com/go-redis/redis"
 )
 

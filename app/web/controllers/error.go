@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/HayatoDoi/HarekazeCTF-Competition/app/web/controllers/BaseController"
+	"github.com/TeamHarekaze/HarekazeCTF2018-server/app/web/controllers/BaseController"
 	"github.com/kataras/iris/mvc"
 )
 
